@@ -20,6 +20,23 @@
     <div class="container sections-wrapper">
         <div class="row">
             <div class="primary col-md-8 col-sm-12 col-xs-12">
+
+                <% if params[:msg] == "success" %>
+                    <section class="latest section">
+                        <div class="section-inner">
+                            <h3 class="title" style="color:orange">收到您的訊息了, 感謝您 ~</h3>
+                        </div>
+                    </section>  
+                <% end %>
+
+                <% if params[:msg] == "error" %>
+                    <section class="latest section">
+                        <div class="section-inner">
+                            <h3 class="title" style="color:orange">很抱歉, 訊息發生錯誤, 請稍候再試~</h3>
+                        </div>
+                    </section>  
+                <% end %>
+
                 <section class="about section">
                     <div class="section-inner">
                         <h2 class="heading">About Me</h2>
@@ -181,10 +198,44 @@
 
                                 </div><!--//desc-->         
                                 <!-- <a class="btn btn-cta-secondary" href=""> -->
-                                    <i class="fa fa-thumbs-o-up"></i> 我要報名
+                                    <!-- <i class="fa fa-thumbs-o-up"></i> 我要報名 -->
                                 <!-- </a>                  -->
                             </div><!--//item-->
                             
+                            <div class="row">
+                                <div class="col-lg-8 col-lg-offset-2">
+                                    <%= form_for @user, url: {action: "send_message"}  do |f| %>
+                                        <div class="row control-group">
+                                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                                <label>稱呼</label>
+                                                <%= f.text_field :name, :placeholder => "Name", :required => true, :class => "form-control"  %>
+                                            </div>
+                                        </div>
+                                        <div class="row control-group">
+                                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                                <label>Email 信箱</label>
+                                                <%= f.text_field :name, :placeholder => "Email 信箱", :required => true, :class => "form-control", :type => "email"  %>
+                                            </div>
+                                        </div>
+                                        <div class="row control-group">
+                                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                                <label>想說的話</label>
+                                                <%= f.text_area :message, :placeholder => "想說的話", :class => "form-control" %>
+                                                <!-- <textarea rows="5" class="form-control" placeholder="Message" id="message" required data-validation-required-message="Please enter a message."></textarea> -->
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div id="success"></div>
+                                        <div class="row">
+                                            <div class="form-group col-xs-12">
+                                                <button type="submit" class="btn btn-success btn-lg">開始報名通知我</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <% end %>
+                                </div>
+                            </div>
+
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
                 </section><!--//section-->
