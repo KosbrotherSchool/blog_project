@@ -52,3 +52,13 @@ gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "twitter-bootstrap-rails"
 
+gem 'typhoeus'
+gem 'nokogiri'
+
+#分頁
+gem 'will_paginate'
+
+gem 'rspec-rails'
+gem 'capybara'
+gem 'selenium-webdriver'
+
