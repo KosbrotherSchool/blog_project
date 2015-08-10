@@ -6,6 +6,7 @@ namespace :crawl do
 	task :crawl_comic_books => :environment do
 
 		# test
+		# test test
 
 		url = URI.parse('http://www.99comic.com/lists/1/')
 		req = Net::HTTP::Get.new(url.to_s)
