@@ -11,7 +11,74 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150408010636) do
+ActiveRecord::Schema.define(version: 20150817124812) do
+
+  create_table "areas", force: true do |t|
+    t.string   "name"
+    t.string   "open_eye_area_link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "movie_times", force: true do |t|
+    t.string   "remark"
+    t.string   "movie_title"
+    t.string   "movie_time"
+    t.string   "movie_time_open_eye_link"
+    t.integer  "movie_id"
+    t.integer  "theater_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "movies", force: true do |t|
+    t.string   "title"
+    t.string   "title_eng"
+    t.string   "movie_class"
+    t.string   "movie_type"
+    t.string   "publish_date"
+    t.string   "director"
+    t.string   "editors"
+    t.string   "actors"
+    t.string   "official"
+    t.text     "movie_info"
+    t.string   "small_pic"
+    t.string   "large_pic"
+    t.string   "open_eye_link"
+    t.string   "yahoo_link"
+    t.boolean  "is_open_eye_crawled", default: false
+    t.boolean  "is_yahoo_crawled",    default: false
+    t.integer  "movie_round",         default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "photos", force: true do |t|
+    t.string   "photo_link"
+    t.integer  "movie_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "theaters", force: true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "phone"
+    t.string   "official_site_link"
+    t.string   "theater_open_eye_link"
+    t.integer  "area_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "trailers", force: true do |t|
+    t.string   "title"
+    t.string   "youtube_id"
+    t.string   "youtube_link"
+    t.integer  "movie_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "name"

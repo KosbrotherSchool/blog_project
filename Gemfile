@@ -55,6 +55,10 @@ gem "twitter-bootstrap-rails"
 gem 'typhoeus'
 gem 'nokogiri'
 
+gem 'sidekiq'
+gem 'sinatra', require: false
+gem 'slim'
+
 #分頁
 gem 'will_paginate'
 

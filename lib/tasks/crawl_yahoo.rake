@@ -532,4 +532,35 @@ namespace :crawl_yahoo do
 
   end
 
+  task :crawl_movie_news => :environment do
+
+    uri = URI.parse('https://tw.movies.yahoo.com/article_news_list.html?p=1')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
+    request = Net::HTTP::Get.new(uri.request_uri)
+    res = http.request(request)
+
+    page_no = Nokogiri::HTML(res.body)
+    page_no.css(".item").last.remove
+    all_news = page_no.css(".item")
+    all_news.each do |news|
+
+      news_ul = news.css("ul")[0]
+      news_link = news_ul.children[0].children[1].children[0].attr("href")
+      news_title = news_ul.children[0].children[1].children[0].children[0].to_s
+      news_info = news_ul.children[0].children[3].children[0].to_s
+      news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
+      pic_link = news.css(".pict a").children[0].attr("src")
+
+      puts news_title
+      puts news_link
+      puts news_info
+      puts news_update_date
+      puts pic_link
+
+    end
+
+  end
+
 end
