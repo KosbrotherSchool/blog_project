@@ -8,6 +8,7 @@ class CreateTheaters < ActiveRecord::Migration
      	t.string :theater_open_eye_link
      	
       t.integer :area_id
+      t.integer :second_area_id
 
       t.timestamps
     end

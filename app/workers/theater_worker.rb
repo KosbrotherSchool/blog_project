@@ -23,10 +23,17 @@ class TheaterWorker
 		# puts address
 		# puts phone
 		# puts theater_link
-		mTheater.address = address
-		mTheater.phone = phone
-		mTheater.official_site_link = theater_link
-		mTheater.save
+		if mTheater.address == nil
+			mTheater.update(address: address)
+		end
+		
+		if mTheater.phone == nil
+			mTheater.update(phone: phone)
+		end
+
+		if mTheater.official_site_link == nil
+			mTheater.update(official_site_link: theater_link)
+		end
 
 		movies = doc.css(".showtime_box")
 		movies.each do |movie|
