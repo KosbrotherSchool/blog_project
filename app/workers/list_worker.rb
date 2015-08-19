@@ -13,7 +13,16 @@ class ListWorker
 		doc.css("div.listall a").each do |movie|
 			 title = movie.children[4].to_s.gsub("\r","").gsub("\n","").gsub("\t","")
 			 movie_link = movie_host + movie.attr("href")
-			 MovieWorker.perform_async(movie_link, movie_round)
+				if Movie.where('title LIKE ?', "#{title}").size != 0
+	        mMovie = Movie.where('title LIKE ?', "#{title}").first
+	        mMovie.update(movie_round: '1')
+	      else
+				  mMovie = Movie.new
+				  mMovie.title = title
+				  mMovie.open_eye_link = movie_link
+				  mMovie.save
+				  MovieWorker.perform_async(mMovie.id, movie_round)
+				end
 		end
 	end
 

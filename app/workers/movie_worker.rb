@@ -4,8 +4,10 @@ class MovieWorker
   include Sidekiq::Worker
   sidekiq_options queue: "movie"
 
-  def perform(movie_url, movie_round)
-    url = URI.parse(movie_url)
+  def perform(movie_id, movie_round)
+  	mMovie = Movie.find(movie_id)
+
+    url = URI.parse(mMovie.open_eye_link)
 		req = Net::HTTP::Get.new(url.to_s)
 		res = Net::HTTP.start(url.host, url.port) {|http|
 			http.request(req)
@@ -141,70 +143,100 @@ class MovieWorker
 		puts movie_info
 		puts photos_link
 
-		if Movie.where('title LIKE ?', "#{title}").size != 0
-			puts "Already has this movie"
-			mMovie = Movie.where('title LIKE ?', "#{title}").first
-			mMovie.update(movie_round: 'movie_round')
-		else
-			mMovie = Movie.new
+		if mMovie.title == nil || mMovie.title == ""
 			mMovie.title = title
+		end
+		
+		if mMovie.title_eng == nil || mMovie.title_eng == ""
 			mMovie.title_eng = title_eng
+		end
+		
+		if mMovie.movie_class == nil || mMovie.movie_class == ""
 			mMovie.movie_class = movie_class
+		end
+		
+		if mMovie.publish_date == nil || mMovie.publish_date == ""
 			mMovie.publish_date = publish_date
+		end
+		
+		if mMovie.director == nil || mMovie.director == ""
 			mMovie.director = director
+		end
+		
+		if mMovie.editors == nil || mMovie.editors == ""
 			mMovie.editors = editors
+		end
+		
+		if mMovie.actors == nil || mMovie.actors == ""
 			mMovie.actors = actors
+		end
+		
+		if mMovie.movie_info == nil || mMovie.movie_info == ""
 			mMovie.movie_info = movie_info
+		end
+		
+		if mMovie.small_pic == nil || mMovie.small_pic == ""
 			mMovie.small_pic = small_pic_link
-			mMovie.movie_round = movie_round
+		end
+		
+		mMovie.movie_round = movie_round
 
-			mMovie.open_eye_link = movie_url
-			mMovie.is_open_eye_crawled = true
-			mMovie.save
-
-			if photos_link != ""
-				crawl_movie_photos(photos_link, mMovie.id)
-			elsif doc.css(".stills_film li a") != nil
-				links = doc.css(".stills_film li a")
-				links.each do |photo_a|
-					url = URI.parse(photo_a.attr("href"))
-					req = Net::HTTP::Get.new(url.to_s)
-					res = Net::HTTP.start(url.host, url.port) {|http|
-						http.request(req)
-					}
-					doc = Nokogiri::HTML(res.body, nil, 'utf-8')
-					the_photo_link = doc.css("td.shadow2 img")[0].attr("src")
-					puts the_photo_link
-					
-					photo = Photo.new
-					photo.photo_link = the_photo_link
-					photo.movie_id = mMovie.id
-					photo.save
-				end
-			end
+		if mMovie.movie_length == nil || mMovie.movie_length == ""
+			mMovie.movie_length = movie_length
+		end
+		
+		begin
+			mMovie.publish_date_date = publish_date.to_date
+		rescue Exception => e
 			
-			if youtube_list_link != ""
-				crawl_movie_trailers(youtube_list_link, mMovie.id)
-			elsif youtube_id != ""
-				uri = URI.parse('https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+youtube_id+'&key=AIzaSyBtwxlVqWkXv0D6kMklsF1Qd0oIhpVdr6g')
-				http = Net::HTTP.new(uri.host, uri.port)
-	  		http.use_ssl = true
-	  		http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
-	  		request = Net::HTTP::Get.new(uri.request_uri)
-	  		res = http.request(request)
-	  		hash = JSON.parse(res.body.force_encoding("utf-8"))
-	  		trailer_title = hash["items"][0]["snippet"]["title"] #Here will go wrong if no info
-	  		
-	  		mTrailer = Trailer.new
-	  		mTrailer.title = trailer_title
-	  		mTrailer.youtube_id = youtube_id
-	  		mTrailer.youtube_link = 'https://www.youtube.com/watch?v='+ mTrailer.youtube_id
-	  		mTrailer.movie_id = mMovie.id
-	  		mTrailer.save
+		end
 
-	  		puts trailer_title +  " " + mTrailer.youtube_link
+		mMovie.is_open_eye_crawled = true
+		mMovie.save
+
+		if photos_link != ""
+			crawl_movie_photos(photos_link, mMovie.id)
+		elsif doc.css(".stills_film li a") != nil
+			links = doc.css(".stills_film li a")
+			links.each do |photo_a|
+				url = URI.parse(photo_a.attr("href"))
+				req = Net::HTTP::Get.new(url.to_s)
+				res = Net::HTTP.start(url.host, url.port) {|http|
+					http.request(req)
+				}
+				doc = Nokogiri::HTML(res.body, nil, 'utf-8')
+				the_photo_link = doc.css("td.shadow2 img")[0].attr("src")
+				puts the_photo_link
+				
+				photo = Photo.new
+				photo.photo_link = the_photo_link
+				photo.movie_id = mMovie.id
+				photo.save
 			end
 		end
+		
+		if youtube_list_link != ""
+			crawl_movie_trailers(youtube_list_link, mMovie.id)
+		elsif youtube_id != ""
+			uri = URI.parse('https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+youtube_id+'&key=AIzaSyBtwxlVqWkXv0D6kMklsF1Qd0oIhpVdr6g')
+			http = Net::HTTP.new(uri.host, uri.port)
+  		http.use_ssl = true
+  		http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
+  		request = Net::HTTP::Get.new(uri.request_uri)
+  		res = http.request(request)
+  		hash = JSON.parse(res.body.force_encoding("utf-8"))
+  		trailer_title = hash["items"][0]["snippet"]["title"] #Here will go wrong if no info
+  		
+  		mTrailer = Trailer.new
+  		mTrailer.title = trailer_title
+  		mTrailer.youtube_id = youtube_id
+  		mTrailer.youtube_link = 'https://www.youtube.com/watch?v='+ mTrailer.youtube_id
+  		mTrailer.movie_id = mMovie.id
+  		mTrailer.save
+
+  		puts trailer_title +  " " + mTrailer.youtube_link
+		end
+		
   end
 
   def crawl_movie_photos(photos_link, movie_id)

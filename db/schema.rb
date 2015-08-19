@@ -11,11 +11,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150817124812) do
+ActiveRecord::Schema.define(version: 20150818064825) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
     t.string   "open_eye_area_link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "movie_news", force: true do |t|
+    t.string   "title"
+    t.string   "info"
+    t.string   "news_link"
+    t.string   "publish_day"
+    t.string   "pic_link"
+    t.date     "publish_date"
+    t.integer  "news_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "movie_ranks", force: true do |t|
+    t.integer  "rank_type"
+    t.integer  "movie_id"
+    t.integer  "current_rank"
+    t.integer  "last_week_rank"
+    t.integer  "publish_weeks"
+    t.integer  "the_week"
+    t.string   "static_duration"
+    t.integer  "expect_people"
+    t.integer  "total_people"
+    t.string   "satisfied_num"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -36,6 +63,7 @@ ActiveRecord::Schema.define(version: 20150817124812) do
     t.string   "title_eng"
     t.string   "movie_class"
     t.string   "movie_type"
+    t.string   "movie_length"
     t.string   "publish_date"
     t.string   "director"
     t.string   "editors"
@@ -44,8 +72,10 @@ ActiveRecord::Schema.define(version: 20150817124812) do
     t.text     "movie_info"
     t.string   "small_pic"
     t.string   "large_pic"
+    t.date     "publish_date_date"
     t.string   "open_eye_link"
     t.string   "yahoo_link"
+    t.boolean  "is_this_week_new",    default: false
     t.boolean  "is_open_eye_crawled", default: false
     t.boolean  "is_yahoo_crawled",    default: false
     t.integer  "movie_round",         default: 0
@@ -85,6 +115,13 @@ ActiveRecord::Schema.define(version: 20150817124812) do
     t.string   "email"
     t.text     "message"
     t.boolean  "is_learned_android"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "yahoo_news_links", force: true do |t|
+    t.string   "link"
+    t.integer  "news_type",  default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

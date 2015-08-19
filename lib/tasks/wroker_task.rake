@@ -32,4 +32,10 @@ namespace :worker_task do
 		end
 	end
 
+	task :run_movie_news_worker => :environment do
+		YahooNewsLink.all.each do |link|
+			NewsWorker.perform_async(link.link, link.news_type)
+		end
+	end
+
 end
