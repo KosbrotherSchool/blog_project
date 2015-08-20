@@ -4,12 +4,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     get 'movie/rank_movies'
-    get 'movie/first_round_movies'
-    get 'movie/second_round_movies'
+    get 'movie/movies'
     get 'movie/areas'
     get 'movie/theaters'
-    get 'movie/movie_movietime'
-    get 'movie/theater_movietime'
+    get 'movie/movietimes'
     get 'movie/news'
   end
 

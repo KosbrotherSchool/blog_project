@@ -24,19 +24,24 @@ class NewsWorker
 
       puts news_title
       
-      mNews = MovieNews.new
-      mNews.title = news_title
-      mNews.info = news_info
-      mNews.news_link = news_link
-      mNews.publish_day = news_update_date
-      mNews.pic_link = pic_link
-      begin
-      	mNews.publish_date = news_update_date.to_date
-      rescue Exception => e
-      	
+      if MovieNews.where('title LIKE ?', "#{news_title}").size != 0
+        puts "Already has this movie news"
+      else
+        mNews = MovieNews.new
+        mNews.title = news_title
+        mNews.info = news_info
+        mNews.news_link = news_link
+        mNews.publish_day = news_update_date
+        mNews.pic_link = pic_link
+        begin
+        	mNews.publish_date = news_update_date.to_date
+        rescue Exception => e
+        	
+        end
+        mNews.news_type = news_type
+  			mNews.save
       end
-      mNews.news_type = news_type
-			mNews.save
+
     end
   end
 end
