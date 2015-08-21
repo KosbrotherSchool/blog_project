@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20150818064825) do
     t.string   "phone"
     t.string   "official_site_link"
     t.string   "theater_open_eye_link"
+    t.string   "yahoo_link"
     t.integer  "area_id"
     t.integer  "second_area_id"
     t.datetime "created_at"

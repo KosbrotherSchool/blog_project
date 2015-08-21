@@ -3,7 +3,7 @@ require 'net/http'
 class YahooMovieWorker
   include Sidekiq::Worker
   include Capybara::DSL
-  sidekiq_options queue: "movie"
+  sidekiq_options queue: "movie_yahoo"
 
   def perform(movie_id)
 

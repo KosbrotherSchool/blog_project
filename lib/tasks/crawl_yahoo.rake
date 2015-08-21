@@ -2,6 +2,167 @@ require 'net/http'
 
 namespace :crawl_yahoo do
 
+  task :crawl_a_theater_movie_time => :environment do
+
+    uri = URI.parse('https://tw.movies.yahoo.com/theater_result.html/id=49')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
+    request = Net::HTTP::Get.new(uri.request_uri)
+    res = http.request(request)
+    doc = Nokogiri::HTML(res.body)
+
+    items = doc.css(".vlist .item")
+    items.each do |item|
+
+      title = item.css(".text h4").text
+
+      remark = ""
+      item.css(".mvtype img").each do |img|
+        if img.attr("src").index("digital.gif")
+          remark = remark + "數位,"
+        end
+        if img.attr("src").index("chi.gif")
+          remark = remark + "中文,"
+        end
+        if img.attr("src").index("imax.gif")
+          remark = remark + "IMAX,"
+        end
+        if img.attr("src").index("3d.gif")
+          remark = remark + "3D,"
+        end
+        if img.attr("src").index("atmos.gif")
+          remark = remark + "Atmos,"
+        end
+      end
+      if remark != ""
+        remark = remark[0..remark.length - 2]
+      end
+
+      yahoo_link = items[0].css(".text h4 a")[0].attr("href")
+
+      if Movie.where('title LIKE ?', "#{title}").size != 0
+        mMovie = Movie.where('title LIKE ?', "#{title}").first
+        mMovie.update(movie_round: '1')
+      else
+        mMovie = Movie.new
+        mMovie.title = title
+        mMovie.yahoo_link = yahoo_link
+        mMovie.movie_round = 1
+        mMovie.save
+        YahooMovieWorker.perform_async(mMovie.id)
+      end
+
+      movie_time = ""
+      item.css("span.tmt").each do |time|
+
+        movie_time = movie_time + time.text + ","
+
+      end
+      if movie_time != ""
+        movie_time = movie_time[0..movie_time.length - 2]
+      end
+      
+      mMovieTime = MovieTime.new
+      mMovieTime.remark = remark;
+      mMovieTime.movie_title = title;
+      mMovieTime.movie_id = mMovie.id;
+      mMovieTime.movie_time = movie_time
+      mMovieTime.save
+
+    end
+  end
+
+  task :crawl_publishing_moives => :environment do
+
+    include Capybara::DSL
+    Capybara.current_driver = :selenium_chrome
+    Capybara.app_host = 'https://tw.movies.yahoo.com'
+
+    page.visit '/movie_intheaters.html'
+    doc = Nokogiri::HTML(page.html)
+    movies = doc.css(".row-container .item")
+    movies.each do |movie|
+
+      title = movie.css(".text h4 a")[0].children[0].to_s
+      title_eng =  movie.css(".text h5 a")[0].children[0].to_s
+      publish_date = movie.css("span.date span").text
+      small_pic = movie.css(".img a img")[0].attr("src")
+      link = movie.css(".text h4 a")[0].attr("href")
+      
+      # puts title
+
+      if Movie.where('title LIKE ?', "#{title}").size != 0
+        mMovie = Movie.where('title LIKE ?', "#{title}").first
+        mMovie.update(movie_round: '1')
+      else
+        mMovie = Movie.new
+        mMovie.title = title
+        mMovie.title_eng = title_eng
+        mMovie.publish_date = publish_date
+        begin
+          mMovie.publish_date_date = publish_date.to_date
+        rescue Exception => e
+          
+        end
+        mMovie.small_pic = small_pic
+        mMovie.yahoo_link = link
+        mMovie.movie_round = 1
+        mMovie.save
+        YahooMovieWorker.perform_async(mMovie.id)
+      end
+
+    end
+
+    links = Array.new
+    doc.css("a.pagelink").last.remove
+    doc.css("a.pagelink").each do |pagelink|
+
+      links << "/movie_comingsoon.html" + pagelink.attr("href")
+
+    end
+
+    links.each do |page_link|
+
+      page.visit page_link
+      doc = Nokogiri::HTML(page.html)
+      movies = doc.css(".row-container .item")
+      movies.each do |movie|
+
+        title = movie.css(".text h4 a")[0].children[0].to_s
+        title_eng =  movie.css(".text h5 a")[0].children[0].to_s
+        publish_date = movie.css("span.date span").text
+        small_pic = movie.css(".img a img")[0].attr("src")
+        link = movie.css(".text h4 a")[0].attr("href")
+        
+        # puts title
+
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+          mMovie.update(movie_round: '1')
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.title_eng = title_eng
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
+          mMovie.small_pic = small_pic
+          mMovie.yahoo_link = link
+          mMovie.movie_round = 1
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
+        end
+
+      end
+
+    end
+
+  end
+
   task :crawl_area_and_theaters => :environment do
 
     include Capybara::DSL
@@ -24,12 +185,17 @@ namespace :crawl_yahoo do
         theater_name = theater_data.css("a").text
         theater_address = theater_data.css("td")[1].children[0].text
         theater_phone = theater_data.css("td")[1].children[1].text
-
+        theater_link = theater_data.css("a")[0].attr("href")
+        if theater_link.index("*") != nil
+          theater_link = theater_link[theater_link.index("*")+1..theater_link.length]
+        end
+        
         mTheater = Theater.new
         mTheater.name = theater_name
         mTheater.address = theater_address
         mTheater.phone = theater_phone
         mTheater.area_id = mArea.id
+        mTheater.yahoo_link = theater_link
         mTheater.save
 
         puts theater_name
@@ -64,12 +230,17 @@ namespace :crawl_yahoo do
           theater_name = theater_data.css("a").text
           theater_address = theater_data.css("td")[1].children[0].text
           theater_phone = theater_data.css("td")[1].children[1].text
+          theater_link = theater_data.css("a")[0].attr("href")
+          if theater_link.index("*") != nil
+            theater_link = theater_link[theater_link.index("*")+1..theater_link.length]
+          end
 
           mTheater = Theater.new
           mTheater.name = theater_name
           mTheater.address = theater_address
           mTheater.phone = theater_phone
           mTheater.area_id = mArea.id
+          mTheater.yahoo_link = theater_link
           mTheater.save
 
           puts theater_name

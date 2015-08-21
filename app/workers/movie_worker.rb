@@ -4,7 +4,7 @@ class MovieWorker
   include Sidekiq::Worker
   sidekiq_options queue: "movie"
 
-  def perform(movie_id, movie_round)
+  def perform(movie_id)
   	mMovie = Movie.find(movie_id)
 
     url = URI.parse(mMovie.open_eye_link)
@@ -179,18 +179,20 @@ class MovieWorker
 			mMovie.small_pic = small_pic_link
 		end
 		
-		mMovie.movie_round = movie_round
+		# mMovie.movie_round = movie_round
 
 		if mMovie.movie_length == nil || mMovie.movie_length == ""
 			mMovie.movie_length = movie_length
 		end
 		
-		begin
-			mMovie.publish_date_date = publish_date.to_date
-		rescue Exception => e
-			
+		if mMovie.publish_date_date == nil
+			begin
+				mMovie.publish_date_date = publish_date.to_date
+			rescue Exception => e
+				
+			end
 		end
-
+		
 		mMovie.is_open_eye_crawled = true
 		mMovie.save
 
