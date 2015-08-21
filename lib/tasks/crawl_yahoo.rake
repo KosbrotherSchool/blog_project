@@ -2,6 +2,84 @@ require 'net/http'
 
 namespace :crawl_yahoo do
 
+  task :crawl_area_and_theaters => :environment do
+
+    include Capybara::DSL
+    Capybara.current_driver = :selenium_chrome
+    Capybara.app_host = 'https://tw.movies.yahoo.com'
+
+    page.visit '/theater_list.html'
+    doc = Nokogiri::HTML(page.html)
+
+    groups = doc.css(".group")
+    groups.each do |group|
+      area_name = group.css(".hd").text
+      mArea = Area.new
+      mArea.name = area_name
+      mArea.save
+
+      group.css("tr")[0].remove
+      group.css("tr").each do |theater_data|
+
+        theater_name = theater_data.css("a").text
+        theater_address = theater_data.css("td")[1].children[0].text
+        theater_phone = theater_data.css("td")[1].children[1].text
+
+        mTheater = Theater.new
+        mTheater.name = theater_name
+        mTheater.address = theater_address
+        mTheater.phone = theater_phone
+        mTheater.area_id = mArea.id
+        mTheater.save
+
+        puts theater_name
+      end
+    end
+
+    option_array = Array.new
+    doc.css("#area option").first.remove
+    doc.css("#area option").first.remove
+    doc.css("#area option").each do |option|
+      option_array << option.attr("value")
+    end
+
+    option_array.each do |option|
+
+      within '#area' do
+        find("option[value='#{option}']").click
+      end
+
+      doc = Nokogiri::HTML(page.html)
+      groups = doc.css(".group")
+
+      groups.each do |group|
+        area_name = group.css(".hd").text
+        mArea = Area.new
+        mArea.name = area_name
+        mArea.save
+
+        group.css("tr")[0].remove
+        group.css("tr").each do |theater_data|
+
+          theater_name = theater_data.css("a").text
+          theater_address = theater_data.css("td")[1].children[0].text
+          theater_phone = theater_data.css("td")[1].children[1].text
+
+          mTheater = Theater.new
+          mTheater.name = theater_name
+          mTheater.address = theater_address
+          mTheater.phone = theater_phone
+          mTheater.area_id = mArea.id
+          mTheater.save
+
+          puts theater_name
+        end
+      end
+
+    end    
+
+  end
+
   task :crawl_up_going_movies => :environment do
 
     include Capybara::DSL

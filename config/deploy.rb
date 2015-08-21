@@ -9,6 +9,7 @@ set :deploy_to, '/home/deploy/blog_project'
 
 set :linked_files, %w{config/database.yml config/secrets.yml}
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :bundle_binstubs, nil
 
 namespace :deploy do
 

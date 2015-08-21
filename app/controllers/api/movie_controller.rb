@@ -14,16 +14,16 @@ class Api::MovieController < ApplicationController
   end
 
   def areas
-    areas = Area.all
+    areas = Area.select("id, name").all
     render :json => areas
   end
 
   def theaters
     if params[:area] != nil && params[:area] != ""
       area_id = params[:area].to_i
-      theaters = Theater.where(" area_id = #{area_id}")
+      theaters = Theater.select("id, name, address, phone, area_id").where(" area_id = #{area_id}")
     else
-      theaters = Theater.all.paginate(:page => params[:page], :per_page => 10)
+      theaters = Theater.select("id, name, address, phone, area_id").all
     end
     render :json => theaters
   end
@@ -48,4 +48,11 @@ class Api::MovieController < ApplicationController
     news = MovieNews.where("news_type = #{news_type}").paginate(:page => params[:page], :per_page => 10)
     render :json => news
   end
+
+  def photos
+    movie_id = params[:movie].to_i
+    photos = Photo.where("movie_id = #{movie_id}")
+    render :json => photos
+  end
+
 end

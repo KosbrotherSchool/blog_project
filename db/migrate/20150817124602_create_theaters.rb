@@ -6,6 +6,7 @@ class CreateTheaters < ActiveRecord::Migration
       t.string :phone
       t.string :official_site_link
      	t.string :theater_open_eye_link
+      t.string :yahoo_link
      	
       t.integer :area_id
       t.integer :second_area_id
