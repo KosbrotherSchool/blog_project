@@ -16,7 +16,11 @@ class NewsWorker
     all_news.each do |news|
 
       news_ul = news.css("ul")[0]
-      news_link = "https://tw.movies.yahoo.com"+ news_ul.css("li.text a")[0].attr("href")
+      if news_ul.css("li.text a")[0].attr("href").index("https")
+        news_link = news_ul.css("li.text a")[0].attr("href")
+      else
+        news_link = "https://tw.movies.yahoo.com"+ news_ul.css("li.text a")[0].attr("href")
+      end
       news_title = news_ul.css("li.text a")[0].text
       news_info = news_ul.css("li.text p")[0].children[0].text
       news_update_date = news_ul.css("span.date span")[0].text

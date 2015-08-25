@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     get 'movie/theaters'
     get 'movie/movietimes'
     get 'movie/news'
+    get 'movie/youtubes'
   end
 
   get 'pages/index'

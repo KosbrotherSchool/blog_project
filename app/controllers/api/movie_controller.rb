@@ -3,13 +3,13 @@ class Api::MovieController < ApplicationController
   def rank_movies
     # 1 台北票房, 2 全美票房, 3 周票房冠軍 4 年度票房 5 網友期待 6 網友滿意
     rank_type = params[:rank_type].to_i
-    movies = MovieRank.select("*").joins(:movie).where("rank_type = #{rank_type}")
+    movies = MovieRank.select("*").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL")
     render :json => movies
   end
 
   def movies
     movie_round = params[:movie_round].to_i
-    movies = Movie.where("movie_round = #{movie_round}").paginate(:page => params[:page], :per_page => 10)
+    movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
     render :json => movies
   end
 
@@ -53,6 +53,19 @@ class Api::MovieController < ApplicationController
     movie_id = params[:movie].to_i
     photos = Photo.where("movie_id = #{movie_id}")
     render :json => photos
+  end
+
+  def youtubes
+    if params[:column_id] != nil && params[:sub_column_id] != nil
+      # return youtube videos
+      column_id = params[:column_id].to_i
+    elsif params[:column_id] != nil
+      # return sub_columns
+    else
+      # return random 10 videos
+      videos = YoutubeVideo.limit(10).order("RAND()")
+    end
+    render :json => videos
   end
 
 end

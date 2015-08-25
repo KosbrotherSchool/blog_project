@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818064825) do
+ActiveRecord::Schema.define(version: 20150825070928) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
@@ -124,6 +124,29 @@ ActiveRecord::Schema.define(version: 20150818064825) do
   create_table "yahoo_news_links", force: true do |t|
     t.string   "link"
     t.integer  "news_type",  default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "youtube_columns", force: true do |t|
+    t.string   "title"
+    t.string   "image_link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "youtube_sub_columns", force: true do |t|
+    t.string   "title"
+    t.integer  "youtube_column_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "youtube_videos", force: true do |t|
+    t.string   "title"
+    t.string   "youtube_id"
+    t.integer  "youtube_column_id"
+    t.integer  "youtube_sub_column_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
