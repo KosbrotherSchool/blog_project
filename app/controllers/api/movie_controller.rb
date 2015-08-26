@@ -8,9 +8,15 @@ class Api::MovieController < ApplicationController
   end
 
   def movies
-    movie_round = params[:movie_round].to_i
-    movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
-    render :json => movies
+    if params[:movie_id] != nil
+      movie = Movie.find(params[:movie_id])
+      render :json => movie
+    elsif params[:movie_round] != nil    
+      movie_round = params[:movie_round].to_i
+      movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
+      render :json => movies
+    end
+    
   end
 
   def areas
