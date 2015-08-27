@@ -77,6 +77,7 @@ class TheaterWorker
 			mMovietime.movie_time = movie_times.to_s
 			mMovietime.movie_time_open_eye_link = movie_link
 			mMovietime.theater_id = theater_id
+			mMovietime.area_id = mMovietime.theater.area_id
 
 			begin
 				mMovie = Movie.where('title LIKE ?', "#{movie_title}").first

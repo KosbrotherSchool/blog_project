@@ -69,6 +69,7 @@ class YahooTheaterWorker
       mMovieTime.movie_id = mMovie.id;
       mMovieTime.movie_time = movie_time
       mMovieTime.theater_id = theater_id
+      mMovietime.area_id = mMovietime.theater.area_id
       mMovieTime.save
 
     end

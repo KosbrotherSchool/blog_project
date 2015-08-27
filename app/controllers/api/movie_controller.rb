@@ -35,16 +35,12 @@ class Api::MovieController < ApplicationController
   end
 
   def movietimes
-    if params[:theater] != nil && params[:movie_id] != nil
+    if params[:theater] != nil
       theater_id = params[:theater].to_i
+      times = MovieTime.where("theater_id = #{theater_id}")
+    elsif params[:movie] != nil && params[:area] != nil
       movie_id = params[:movie].to_i
-      times = MovieTimes.where("theater_id = #{theater_id} and movie_id = #{movie_id}")
-    elsif params[:theater] != nil
-      theater_id = params[:theater].to_i
-      times = MovieTimes.where("theater_id = #{theater_id}")
-    elsif params[:movie] != nil
-      movie_id = params[:movie].to_i
-      times = MovieTimes.where("movie_id = #{movie_id}")
+      times = MovieTime.where("movie_id = #{movie_id} and area_id = #{area_id}")
     end
     render :json => times
   end
