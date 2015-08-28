@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150827121630) do
+ActiveRecord::Schema.define(version: 20150828075610) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20150827121630) do
   end
 
   create_table "youtube_sub_columns", force: true do |t|
-    t.string   "title"
+    t.string   "name"
     t.integer  "youtube_column_id"
     t.datetime "created_at"
     t.datetime "updated_at"
