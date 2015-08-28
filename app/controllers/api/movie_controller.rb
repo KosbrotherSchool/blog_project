@@ -77,7 +77,8 @@ class Api::MovieController < ApplicationController
       videos = YoutubeVideo.limit(10).order("RAND()")
     else
       # return columns
-      render YoutubeColumn.all.paginate(:page => params[:page], :per_page => 10)
+      columns = YoutubeColumn.all.paginate(:page => params[:page], :per_page => 10)
+      render :json => columns
     end
     render :json => videos
   end
