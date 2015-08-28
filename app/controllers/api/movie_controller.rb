@@ -12,15 +12,14 @@ class Api::MovieController < ApplicationController
       movie = Movie.find(params[:movie_id])
       render :json => movie
     elsif params[:movie_round] != nil
-      if params[:movie_round] != 4
+      if params[:movie_round].to_i != 4
           movie_round = params[:movie_round].to_i
           movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
           render :json => movies
       else
           movies = Movie.where("is_this_week_new = true and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
           render :json => movies
-      end   
-      
+      end     
     end
     
   end
