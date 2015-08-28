@@ -72,7 +72,8 @@ class Api::MovieController < ApplicationController
       render :json => videos
     elsif params[:column_id] != nil
       # return sub_columns
-      videos = YoutubeVideo.select("*").joins(:youtube_sub_column).where("youtube_videos.youtube_column_id = 1")
+      column_id = params[:column_id].to_i
+      videos = YoutubeVideo.select("*").joins(:youtube_sub_column).where("youtube_videos.youtube_column_id = #{column_id}")
       render :json => videos
     elsif params[:random] != nil
       # return random 10 videos
