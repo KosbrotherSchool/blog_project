@@ -72,9 +72,12 @@ class Api::MovieController < ApplicationController
     elsif params[:column_id] != nil
       # return sub_columns
       videos = YoutubeVideo.select("*").includes(:youtube_sub_column).where("youtube_column_id = 1")
-    else
+    elsif params[:random] != nil
       # return random 10 videos
       videos = YoutubeVideo.limit(10).order("RAND()")
+    else
+      # return columns
+      return YoutubeColumn.all.paginate(:page => params[:page], :per_page => 10)
     end
     render :json => videos
   end
