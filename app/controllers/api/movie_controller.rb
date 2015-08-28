@@ -67,8 +67,11 @@ class Api::MovieController < ApplicationController
     if params[:column_id] != nil && params[:sub_column_id] != nil
       # return youtube videos
       column_id = params[:column_id].to_i
+      sub_column_id = params[:sub_column_id].to_i
+      videos = YoutubeVideo.where("youtube_column_id = #{column_id} and sub_column_id = #{sub_column_id}")
     elsif params[:column_id] != nil
       # return sub_columns
+      videos = YoutubeVideo.select("*").includes(:youtube_sub_column).where("youtube_column_id = 1").size
     else
       # return random 10 videos
       videos = YoutubeVideo.limit(10).order("RAND()")
