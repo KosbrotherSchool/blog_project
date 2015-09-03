@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     get 'movie/movietimes'
     get 'movie/news'
     get 'movie/youtubes'
+    get 'movie/photos'
+    get 'movie/trailers'
   end
 
   get 'pages/index'

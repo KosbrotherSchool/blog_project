@@ -58,9 +58,15 @@ class Api::MovieController < ApplicationController
   end
 
   def photos
-    movie_id = params[:movie].to_i
+    movie_id = params[:movie_id].to_i
     photos = Photo.where("movie_id = #{movie_id}")
     render :json => photos
+  end
+
+  def trailers
+    movie_id = params[:movie_id].to_i
+    trailers = Trailer.where("movie_id = #{movie_id}")
+    render :json => trailers
   end
 
   def youtubes
