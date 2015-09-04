@@ -31,8 +31,14 @@ class Api::MovieController < ApplicationController
   end
 
   def areas
-    areas = Area.select("id, name").all
-    render :json => areas
+    if params[:movie_id] != nil
+      movie = Movie.find(params[:movie_id])
+      areas = movie.areas
+      render :json => areas
+    else
+      areas = Area.select("id, name").all
+      render :json => areas
+    end
   end
 
   def theaters
