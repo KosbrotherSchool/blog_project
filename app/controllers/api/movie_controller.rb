@@ -2,7 +2,7 @@ class Api::MovieController < ApplicationController
 
   def search
     query = params[:query]
-    movies = Movie.where('title LIKE ? OR title_eng LIKE ? OR actors LIKE ?', "%#{query}%", "%#{query}%", "%#{query}%")
+    movies = Movie.where('title LIKE ? OR title_eng LIKE ? OR actors LIKE ?', "%#{query}%", "%#{query}%", "%#{query}%").paginate(:page => params[:page], :per_page => 10)
     render :json => movies 
   end
 
