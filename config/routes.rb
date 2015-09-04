@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     get 'movie/youtubes'
     get 'movie/photos'
     get 'movie/trailers'
+    get 'movie/search'
   end
 
   get 'pages/index'
