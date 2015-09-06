@@ -194,10 +194,10 @@ class MovieWorker
 		end
 		
 		mMovie.is_open_eye_crawled = true
-		mMovie.save
+		
 
 		if photos_link != ""
-			crawl_movie_photos(photos_link, mMovie.id)
+			crawl_movie_photos(photos_link, mMovie.id, mMovie)
 		elsif doc.css(".stills_film li a") != nil
 			links = doc.css(".stills_film li a")
 			links.each do |photo_a|
@@ -214,11 +214,12 @@ class MovieWorker
 				photo.photo_link = the_photo_link
 				photo.movie_id = mMovie.id
 				photo.save
+				mMovie.photo_size = mMovie.photo_size + 1
 			end
 		end
 		
 		if youtube_list_link != ""
-			crawl_movie_trailers(youtube_list_link, mMovie.id)
+			crawl_movie_trailers(youtube_list_link, mMovie.id, mMovie)
 		elsif youtube_id != ""
 			uri = URI.parse('https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+youtube_id+'&key=AIzaSyBtwxlVqWkXv0D6kMklsF1Qd0oIhpVdr6g')
 			http = Net::HTTP.new(uri.host, uri.port)
@@ -236,12 +237,14 @@ class MovieWorker
   		mTrailer.movie_id = mMovie.id
   		mTrailer.save
 
-  		puts trailer_title +  " " + mTrailer.youtube_link
+  		mMovie.trailer_size = mMovie.trailer_size + 1
 		end
 		
+		mMovie.save
+
   end
 
-  def crawl_movie_photos(photos_link, movie_id)
+  def crawl_movie_photos(photos_link, movie_id, mMovie)
 
 		puts "Crawling Photos"
 
@@ -274,10 +277,11 @@ class MovieWorker
 			photo.photo_link = the_photo_link
 			photo.movie_id = movie_id
 			photo.save
+			mMovie.photo_size = mMovie.photo_size + 1
 		end
 	end
 
-	def crawl_movie_trailers(trailers_link, movie_id)
+	def crawl_movie_trailers(trailers_link, movie_id, mMovie)
 		puts "crawl_movie_trailers"
 
 		api_key = "AIzaSyBtwxlVqWkXv0D6kMklsF1Qd0oIhpVdr6g"
@@ -315,6 +319,7 @@ class MovieWorker
 	  		mTrailer.youtube_link = 'https://www.youtube.com/watch?v='+ mTrailer.youtube_id
 	  		mTrailer.movie_id = movie_id
 	  		mTrailer.save
+	  		mMovie.trailer_size = mMovie.trailer_size + 1
   		rescue Exception => e
   			
   		end

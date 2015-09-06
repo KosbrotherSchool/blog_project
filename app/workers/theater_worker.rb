@@ -87,6 +87,13 @@ class TheaterWorker
 			end
 			mMovietime.save
 
+			if MovieAreaShip.where("movie_id = #{mMovietime.movie_id} AND area_id = #{mMovietime.area_id}").size == 0
+				mMovieAreaShip = MovieAreaShip.new
+				mMovieAreaShip.movie_id = mMovietime.movie_id
+				mMovieAreaShip.area_id = mMovietime.area_id
+				mMovieAreaShip.save
+			end
+
 		end
   end
 end

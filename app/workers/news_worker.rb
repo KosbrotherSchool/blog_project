@@ -21,6 +21,8 @@ class NewsWorker
       else
         news_link = "https://tw.movies.yahoo.com"+ news_ul.css("li.text a")[0].attr("href")
       end
+      news_link = "https://tw.movies.yahoo.com/news/" + news_link.split('/').last
+
       news_title = news_ul.css("li.text a")[0].text
       news_info = news_ul.css("li.text p")[0].children[0].text
       news_update_date = news_ul.css("span.date span")[0].text

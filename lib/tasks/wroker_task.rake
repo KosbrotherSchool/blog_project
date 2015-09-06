@@ -19,6 +19,8 @@ namespace :worker_task do
 	end
 
 	task :run_theater_get_movie_time_workers => :environment do
+		MovieAreaShip.delete_all
+		MovieTime.delete_all
 		Theater.all.each do |theater|
 			TheaterWorker.perform_async(theater.theater_open_eye_link, theater.id)
 		end
