@@ -26,18 +26,15 @@ class Api::MovieController < ApplicationController
       movie = Movie.find(params[:movie_id])
       render :json => movie
     elsif params[:movie_round] != nil
-      if params[:movie_round].to_i != 4
-          movie_round = params[:movie_round].to_i
-          if movie_round != 3 
-            movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
-          else
-            movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date ASC').paginate(:page => params[:page], :per_page => 10)
-          end
-          render :json => movies
-      else
-          movies = Movie.where("is_this_week_new = true and yahoo_link is not NULL")
-          render :json => movies
-      end     
+        movie_round = params[:movie_round].to_i
+        if movie_round <= 2
+          movies = Movie.select('id, title, movie_class, small_pic').where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
+        elsif(movie_round == 3)
+          movies = Movie.select('id, title, movie_class, small_pic').where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date ASC').paginate(:page => params[:page], :per_page => 10)
+        elsif(movie_round == 4)
+           movies = Movie.select('id, title, publish_date, movie_class, actors, movie_type, small_pic').where("is_this_week_new = true and yahoo_link is not NULL")
+        end
+        render :json => movies   
     end
     
   end
