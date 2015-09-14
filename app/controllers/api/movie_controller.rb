@@ -28,7 +28,7 @@ class Api::MovieController < ApplicationController
     elsif params[:movie_round] != nil
       if params[:movie_round].to_i != 4
           movie_round = params[:movie_round].to_i
-          movies = Movie.where("movie_round = 1 and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
+          movies = Movie.where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
           render :json => movies
       else
           movies = Movie.where("is_this_week_new = true and yahoo_link is not NULL")
