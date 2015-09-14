@@ -24,15 +24,15 @@ class TheaterWorker
 		# puts phone
 		# puts theater_link
 		if mTheater.address == nil
-			mTheater.update(address: address)
+			mTheater.update(:address => address)
 		end
 		
 		if mTheater.phone == nil
-			mTheater.update(phone: phone)
+			mTheater.update(:phone => phone)
 		end
 
 		if mTheater.official_site_link == nil
-			mTheater.update(official_site_link: theater_link)
+			mTheater.update(:official_site_link => theater_link)
 		end
 
 		movies = doc.css(".showtime_box")

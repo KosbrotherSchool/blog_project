@@ -43,7 +43,7 @@ namespace :crawl_yahoo do
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
         mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(movie_round: '1')
+        mMovie.update(:movie_round => 1)
       else
         mMovie = Movie.new
         mMovie.title = title
@@ -94,7 +94,7 @@ namespace :crawl_yahoo do
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
         mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(movie_round: '1')
+        mMovie.update(:movie_round => 1)
       else
         mMovie = Movie.new
         mMovie.title = title
@@ -139,7 +139,7 @@ namespace :crawl_yahoo do
 
         if Movie.where('title LIKE ?', "#{title}").size != 0
           mMovie = Movie.where('title LIKE ?', "#{title}").first
-          mMovie.update(movie_round: '1')
+          mMovie.update(:movie_round => 1)
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -275,8 +275,11 @@ namespace :crawl_yahoo do
       # puts link
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
+        puts title
         mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(movie_round: '3')
+        mMovie.movie_round = 3
+        mMovie.save
+        # mMovie.update(:movie_round =>3)
       else
         mMovie = Movie.new
         mMovie.title = title
@@ -325,7 +328,7 @@ namespace :crawl_yahoo do
 
         if Movie.where('title LIKE ?', "#{title}").size != 0
           mMovie = Movie.where('title LIKE ?', "#{title}").first
-          mMovie.update(movie_round: '3')
+          mMovie.update(:movie_round => 3)
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -426,8 +429,8 @@ namespace :crawl_yahoo do
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
         mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(movie_round: '1')
-        mMovie.update(is_this_week_new: true)
+        mMovie.update(:movie_round => 1)
+        mMovie.update(:is_this_week_new => true)
       else
         mMovie = Movie.new
         mMovie.title = title

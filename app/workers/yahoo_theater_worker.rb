@@ -45,7 +45,7 @@ class YahooTheaterWorker
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
         mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(movie_round: '1')
+        mMovie.update(:movie_round => 1)
       else
         mMovie = Movie.new
         mMovie.title = title
