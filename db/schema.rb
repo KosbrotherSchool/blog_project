@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914020144) do
+ActiveRecord::Schema.define(version: 20150914055835) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20150914020144) do
   create_table "movie_times", force: true do |t|
     t.string   "remark"
     t.string   "movie_title"
-    t.string   "movie_time"
+    t.text     "movie_time"
     t.string   "movie_time_open_eye_link"
     t.integer  "movie_id"
     t.integer  "theater_id"

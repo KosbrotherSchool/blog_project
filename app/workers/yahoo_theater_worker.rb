@@ -69,8 +69,15 @@ class YahooTheaterWorker
       mMovieTime.movie_id = mMovie.id;
       mMovieTime.movie_time = movie_time
       mMovieTime.theater_id = theater_id
-      mMovietime.area_id = mMovietime.theater.area_id
+      mMovieTime.area_id = theater.area_id
       mMovieTime.save
+
+      if MovieAreaShip.where("movie_id = #{mMovieTime.movie_id} AND area_id = #{mMovieTime.area_id}").size == 0
+        mMovieAreaShip = MovieAreaShip.new
+        mMovieAreaShip.movie_id = mMovieTime.movie_id
+        mMovieAreaShip.area_id = mMovieTime.area_id
+        mMovieAreaShip.save
+      end
 
     end
 

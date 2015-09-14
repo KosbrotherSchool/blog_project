@@ -13,7 +13,7 @@ class NewsWorker
     page_no = Nokogiri::HTML(res.body)
     page_no.css(".item").last.remove
     all_news = page_no.css(".item")
-    all_news.each do |news|
+    all_news.reverse_each do |news|
 
       news_ul = news.css("ul")[0]
       if news_ul.css("li.text a")[0].attr("href").index("https")

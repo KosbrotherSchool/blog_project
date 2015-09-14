@@ -118,7 +118,7 @@ namespace :crawl_yahoo do
     doc.css("a.pagelink").last.remove
     doc.css("a.pagelink").each do |pagelink|
 
-      links << "/movie_comingsoon.html" + pagelink.attr("href")
+      links << "/movie_intheaters.html" + pagelink.attr("href")
 
     end
 
@@ -275,7 +275,7 @@ namespace :crawl_yahoo do
       # puts link
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
-        puts title
+        # puts title
         mMovie = Movie.where('title LIKE ?', "#{title}").first
         mMovie.movie_round = 3
         mMovie.save
