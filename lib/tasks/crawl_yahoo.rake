@@ -707,7 +707,7 @@ namespace :crawl_yahoo do
   end
 
   task :crawl_movie_ranks => :environment do
-    MovieRank.delete_all
+    # MovieRank.delete_all
 
     include Capybara::DSL
     Capybara.current_driver = :selenium_chrome

@@ -10,11 +10,11 @@ class Api::MovieController < ApplicationController
     # 1 台北票房, 2 全美票房, 3 周票房冠軍 4 年度票房 5 網友期待 6 網友滿意
     rank_type = params[:rank_type].to_i
     if params[:page] == nil
-      movies = MovieRank.select("*").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL")
+      movies = MovieRank.select("*").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true")
       render :json => movies
     else
       if rank_type == 1
-        movies = MovieRank.select("movies.id, title, small_pic").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL").paginate(:page => params[:page], :per_page => 10)
+        movies = MovieRank.select("movies.id, title, small_pic").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true").paginate(:page => params[:page], :per_page => 10)
         render :json => movies
       end
     end
@@ -41,7 +41,7 @@ class Api::MovieController < ApplicationController
   def areas
     if params[:movie_id] != nil
       movie = Movie.find(params[:movie_id])
-      areas = movie.areas
+      areas = movie.areas.where("is_show = true")
       render :json => areas
     else
       areas = Area.select("id, name").all
@@ -62,11 +62,11 @@ class Api::MovieController < ApplicationController
   def movietimes
     if params[:theater] != nil
       theater_id = params[:theater].to_i
-      times = MovieTime.where("theater_id = #{theater_id}")
+      times = MovieTime.where("theater_id = #{theater_id} and is_show = true")
     elsif params[:movie] != nil && params[:area] != nil
       movie_id = params[:movie].to_i
       area_id = params[:area].to_i
-      times = MovieTime.where("movie_id = #{movie_id} and area_id = #{area_id}")
+      times = MovieTime.where("movie_id = #{movie_id} and area_id = #{area_id} and is_show = true")
     end
     render :json => times
   end

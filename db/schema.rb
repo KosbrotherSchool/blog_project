@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904075808) do
+ActiveRecord::Schema.define(version: 20150914020144) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20150904075808) do
     t.integer  "area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_show",    default: false
   end
 
   create_table "movie_news", force: true do |t|
@@ -52,6 +53,7 @@ ActiveRecord::Schema.define(version: 20150904075808) do
     t.string   "satisfied_num"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_show",         default: false
   end
 
   create_table "movie_times", force: true do |t|
@@ -64,6 +66,8 @@ ActiveRecord::Schema.define(version: 20150904075808) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "area_id"
+    t.string   "movie_photo"
+    t.boolean  "is_show",                  default: false
   end
 
   create_table "movies", force: true do |t|
