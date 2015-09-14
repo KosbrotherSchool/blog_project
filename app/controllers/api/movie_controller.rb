@@ -10,7 +10,7 @@ class Api::MovieController < ApplicationController
     # 1 台北票房, 2 全美票房, 3 周票房冠軍 4 年度票房 5 網友期待 6 網友滿意
     rank_type = params[:rank_type].to_i
     if params[:page] == nil
-      movies = MovieRank.select("*").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true")
+      movies = MovieRank.select("movies.id, title, movie_type, movie_class, actors, publish_date, small_pic, publish_weeks, the_week, static_duration, expect_people, total_people, satisfied_num").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true")
       render :json => movies
     else
       if rank_type == 1
