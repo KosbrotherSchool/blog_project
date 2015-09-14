@@ -77,7 +77,7 @@ class Api::MovieController < ApplicationController
 
   def news
     news_type = params[:news_type].to_i
-    news = MovieNews.where("news_type = #{news_type}").order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+    news = MovieNews.select("id, title, news_link, publish_day, pic_link").where("news_type = #{news_type}").order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     render :json => news
   end
 
