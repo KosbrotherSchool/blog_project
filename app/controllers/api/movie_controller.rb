@@ -108,7 +108,7 @@ class Api::MovieController < ApplicationController
       render :json => videos
     else
       # return columns
-      columns = YoutubeColumn.all.paginate(:page => params[:page], :per_page => 10)
+      columns = YoutubeColumn.all.paginate(:page => params[:page], :per_page => 10).reverse
       render :json => columns
     end
     
