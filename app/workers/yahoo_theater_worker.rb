@@ -73,7 +73,7 @@ class YahooTheaterWorker
       mMovieTime.movie_photo = mMovieTime.movie.small_pic
       mMovieTime.save
 
-      if MovieAreaShip.where("movie_id = #{mMovieTime.movie_id} AND area_id = #{mMovieTime.area_id}").size == 0
+      if MovieAreaShip.where("movie_id = #{mMovieTime.movie_id} AND area_id = #{mMovieTime.area_id} AND is_show = false").size == 0
         mMovieAreaShip = MovieAreaShip.new
         mMovieAreaShip.movie_id = mMovieTime.movie_id
         mMovieAreaShip.area_id = mMovieTime.area_id
