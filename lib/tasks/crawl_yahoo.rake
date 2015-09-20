@@ -15,7 +15,7 @@ namespace :crawl_yahoo do
     items = doc.css(".vlist .item")
     items.each do |item|
 
-      title = item.css(".text h4").text
+      title = item.css(".text h4").text.strip
 
       remark = ""
       item.css(".mvtype img").each do |img|
@@ -75,6 +75,8 @@ namespace :crawl_yahoo do
 
   task :crawl_publishing_moives => :environment do
 
+    Movie.where("movie_round = 1").update_all("movie_round = 0")
+
     include Capybara::DSL
     Capybara.current_driver = :selenium_chrome
     Capybara.app_host = 'https://tw.movies.yahoo.com'
@@ -84,7 +86,7 @@ namespace :crawl_yahoo do
     movies = doc.css(".row-container .item")
     movies.each do |movie|
 
-      title = movie.css(".text h4 a")[0].children[0].to_s
+      title = movie.css(".text h4 a")[0].children[0].to_s.strip
       title_eng =  movie.css(".text h5 a")[0].children[0].to_s
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
@@ -129,7 +131,7 @@ namespace :crawl_yahoo do
       movies = doc.css(".row-container .item")
       movies.each do |movie|
 
-        title = movie.css(".text h4 a")[0].children[0].to_s
+        title = movie.css(".text h4 a")[0].children[0].to_s.strip
         title_eng =  movie.css(".text h5 a")[0].children[0].to_s
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
@@ -253,6 +255,8 @@ namespace :crawl_yahoo do
 
   task :crawl_up_going_movies => :environment do
 
+    Movie.where("movie_round = 3").update_all("movie_round = 0")
+
     include Capybara::DSL
     Capybara.current_driver = :selenium_chrome
     Capybara.app_host = 'https://tw.movies.yahoo.com'
@@ -262,7 +266,7 @@ namespace :crawl_yahoo do
     movies = doc.css(".row-container .item")
     movies.each do |movie|
 
-      title = movie.css(".text h4 a")[0].children[0].to_s
+      title = movie.css(".text h4 a")[0].children[0].to_s.strip
       title_eng =  movie.css(".text h5 a")[0].children[0].to_s
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
@@ -314,7 +318,7 @@ namespace :crawl_yahoo do
       movies = doc.css(".row-container .item")
       movies.each do |movie|
 
-        title = movie.css(".text h4 a")[0].children[0].to_s
+        title = movie.css(".text h4 a")[0].children[0].to_s.strip
         title_eng =  movie.css(".text h5 a")[0].children[0].to_s
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
@@ -362,7 +366,7 @@ namespace :crawl_yahoo do
     click_on 'yuievtautoid-1'
     page_no = Nokogiri::HTML(page.html)
 
-    title = page_no.css(".text.bulletin h4").text
+    title = page_no.css(".text.bulletin h4").text.strip
     title_eng = page_no.css(".text.bulletin h5").text
 
     movie_class = ""
@@ -415,7 +419,7 @@ namespace :crawl_yahoo do
     movies = doc.css(".row-container .item")
     movies.each do |movie|
 
-      title = movie.css(".text h4 a")[0].children[0].to_s
+      title = movie.css(".text h4 a")[0].children[0].to_s.strip
       title_eng =  movie.css(".text h5 a")[0].children[0].to_s
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
@@ -468,7 +472,7 @@ namespace :crawl_yahoo do
 
       news_ul = news.css("ul")[0]
       news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s
+      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
       news_info = news_ul.children[0].children[3].children[0].to_s
       news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
       pic_link = news.css(".pict a").children[0].attr("src")
@@ -490,7 +494,7 @@ namespace :crawl_yahoo do
 
       news_ul = news.css("ul")[0]
       news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s
+      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
       news_info = news_ul.children[0].children[3].children[0].to_s
       news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
       pic_link = news.css(".pict a").children[0].attr("src")
@@ -512,7 +516,7 @@ namespace :crawl_yahoo do
 
       news_ul = news.css("ul")[0]
       news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s
+      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
       news_info = news_ul.children[0].children[3].children[0].to_s
       news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
       pic_link = news.css(".pict a").children[0].attr("src")
@@ -534,7 +538,7 @@ namespace :crawl_yahoo do
 
       news_ul = news.css("ul")[0]
       news_link = news_ul.children[0].children[3].children[0].attr("href")
-      news_title = news_ul.children[0].children[3].children[0].children[0].to_s
+      news_title = news_ul.children[0].children[3].children[0].children[0].to_s.strip
       news_info = news_ul.children[0].children[5].children[0].to_s
       news_update_date = news_ul.children[0].children[7].children[1].children[0].to_s
       pic_link = news.css(".pict a").children[0].attr("src")
@@ -565,10 +569,10 @@ namespace :crawl_yahoo do
       rank =  movie.children[1].children[0].children[0].to_s
       
       begin
-        title = movie.children[3].css(".text a")[0].children[0].to_s
+        title = movie.children[3].css(".text a")[0].children[0].to_s.strip
         movie_link = movie.children[3].css(".text a")[0].attr("href")
       rescue Exception => e
-        title = movie.children[3].children[1].children[0].to_s
+        title = movie.children[3].children[1].children[0].to_s.strip
         movie_link = movie.children[3].children[1].attr("href")
       end
 
@@ -640,10 +644,10 @@ namespace :crawl_yahoo do
       rank =  movie.children[1].children[0].children[0].to_s
 
       begin
-        title = movie.children[3].css(".text a")[0].children[0].to_s
+        title = movie.children[3].css(".text a")[0].children[0].to_s.strip
         movie_link = movie.children[3].css(".text a")[0].attr("href")
       rescue Exception => e
-        title = movie.children[3].children[1].children[0].to_s
+        title = movie.children[3].children[1].children[0].to_s.strip
         movie_link = movie.children[3].children[1].attr("href")
       end
 
@@ -727,10 +731,10 @@ namespace :crawl_yahoo do
       last_week_rank  = movie.children[3].children[0].to_s.gsub("\n","")
       
       begin
-        title = movie.children[5].css(".text a")[0].children[0].to_s
+        title = movie.children[5].css(".text a")[0].children[0].to_s.strip
         movie_link = movie.children[5].css(".text a")[0].attr("href")
       rescue Exception => e
-        title = movie.children[5].children[1].children[0].to_s
+        title = movie.children[5].children[1].children[0].to_s.strip
         movie_link = movie.children[5].children[1].attr("href")
       end
       
@@ -796,15 +800,15 @@ namespace :crawl_yahoo do
       last_week_rank  = movie.children[3].children[0].to_s.gsub("\n","")
       
       begin
-        title = movie.children[5].css(".text a")[0].children[0].to_s
+        title = movie.children[5].css(".text a")[0].children[0].to_s.strip
         movie_link = movie.children[5].css(".text a")[0].attr("href")
       rescue Exception => e
-        title = movie.children[5].children[1].children[0].to_s
+        title = movie.children[5].children[1].children[0].to_s.strip
         movie_link = movie.children[5].children[1].attr("href")
       end
 
       if title == "" 
-        title = movie.children[5].children[0].to_s.gsub("\n","")
+        title = movie.children[5].children[0].to_s.gsub("\n","").strip
       end
       
       begin
@@ -868,7 +872,7 @@ namespace :crawl_yahoo do
 
       week_num = movie.children[1].children[1].children[0].to_s
       duration = movie.children[3].children[0].to_s + movies[1].children[3].children[2].to_s.gsub("\n","")
-      title = movie.children[5].children[1].children[0].to_s
+      title = movie.children[5].children[1].children[0].to_s.strip
       movie_link = movie.children[5].children[1].attr("href")
       show_weeks = movie.children[7].children[0].to_s.gsub("\n","").gsub(" ","")
       movie_trailer_link = movie.children[9].children[0].children[0].attr("href")
@@ -922,15 +926,15 @@ namespace :crawl_yahoo do
       rank =  movie.children[1].children[1].children[0].to_s
 
       begin
-        title = movie.children[5].css(".text a")[0].children[0].to_s
+        title = movie.children[5].css(".text a")[0].children[0].to_s.strip
         movie_link = movie.children[5].css(".text a")[0].attr("href")
       rescue Exception => e
-        title = movie.children[5].children[1].children[0].to_s
+        title = movie.children[5].children[1].children[0].to_s.strip
         movie_link = movie.children[5].children[1].attr("href")
       end
 
       if title == "" 
-        title = movie.children[5].children[0].to_s.gsub("\n","")
+        title = movie.children[5].children[0].to_s.gsub("\n","").strip
       end
       
       begin
@@ -1001,7 +1005,7 @@ namespace :crawl_yahoo do
 
       news_ul = news.css("ul")[0]
       news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s
+      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
       news_info = news_ul.children[0].children[3].children[0].to_s
       news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
       pic_link = news.css(".pict a").children[0].attr("src")

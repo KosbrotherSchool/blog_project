@@ -18,7 +18,7 @@ class YahooTheaterWorker
     items = doc.css(".vlist .item")
     items.each do |item|
 
-      title = item.css(".text h4").text
+      title = item.css(".text h4").text.strip
       remark = ""
       item.css(".mvtype img").each do |img|
         if img.attr("src").index("digital.gif")
