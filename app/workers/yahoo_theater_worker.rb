@@ -42,42 +42,45 @@ class YahooTheaterWorker
       end
 
       yahoo_link = item.css(".text h4 a")[0].attr("href")
+      if yahoo_link != nil && yahoo_link != ""
 
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(:movie_round => 1)
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = yahoo_link
-        mMovie.movie_round = 1
-        mMovie.save
-        YahooMovieWorker.perform_async(mMovie.id)
-      end
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+          mMovie.update(:movie_round => 1)
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = yahoo_link
+          mMovie.movie_round = 1
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
+        end
 
-      movie_time = ""
-      item.css("span.tmt").each do |time|
-        movie_time = movie_time + time.text + ","
-      end
-      if movie_time != ""
-        movie_time = movie_time[0..movie_time.length - 2]
-      end
-      
-      mMovieTime = MovieTime.new
-      mMovieTime.remark = remark;
-      mMovieTime.movie_title = title;
-      mMovieTime.movie_id = mMovie.id;
-      mMovieTime.movie_time = movie_time
-      mMovieTime.theater_id = theater_id
-      mMovieTime.area_id = theater.area_id
-      mMovieTime.movie_photo = mMovieTime.movie.small_pic
-      mMovieTime.save
+        movie_time = ""
+        item.css("span.tmt").each do |time|
+          movie_time = movie_time + time.text + ","
+        end
+        if movie_time != ""
+          movie_time = movie_time[0..movie_time.length - 2]
+        end
+        
+        mMovieTime = MovieTime.new
+        mMovieTime.remark = remark;
+        mMovieTime.movie_title = title;
+        mMovieTime.movie_id = mMovie.id;
+        mMovieTime.movie_time = movie_time
+        mMovieTime.theater_id = theater_id
+        mMovieTime.area_id = theater.area_id
+        mMovieTime.movie_photo = mMovieTime.movie.small_pic
+        mMovieTime.save
 
-      if MovieAreaShip.where("movie_id = #{mMovieTime.movie_id} AND area_id = #{mMovieTime.area_id} AND is_show = false").size == 0
-        mMovieAreaShip = MovieAreaShip.new
-        mMovieAreaShip.movie_id = mMovieTime.movie_id
-        mMovieAreaShip.area_id = mMovieTime.area_id
-        mMovieAreaShip.save
+        if MovieAreaShip.where("movie_id = #{mMovieTime.movie_id} AND area_id = #{mMovieTime.area_id} AND is_show = false").size == 0
+          mMovieAreaShip = MovieAreaShip.new
+          mMovieAreaShip.movie_id = mMovieTime.movie_id
+          mMovieAreaShip.area_id = mMovieTime.area_id
+          mMovieAreaShip.save
+        end
+        
       end
 
     end
