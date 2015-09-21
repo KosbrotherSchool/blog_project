@@ -40,6 +40,9 @@ namespace :crawl_yahoo do
       end
 
       yahoo_link = items[0].css(".text h4 a")[0].attr("href")
+      if yahoo_link.index("*")
+        yahoo_link = yahoo_link[yahoo_link.index("*")+1..yahoo_link.length]
+      end
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
         mMovie = Movie.where('title LIKE ?', "#{title}").first
@@ -91,7 +94,9 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      
+      if link.index("*")
+        link = link[link.index("*")+1..link.length]
+      end
       # puts title
 
       if Movie.where('title LIKE ?', "#{title}").size != 0
@@ -136,7 +141,9 @@ namespace :crawl_yahoo do
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
-        
+        if link.index("*")
+          link = link[link.index("*")+1..link.length]
+        end
         # puts title
 
         if Movie.where('title LIKE ?', "#{title}").size != 0
@@ -271,7 +278,9 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      
+      if link.index("*")
+        link = link[link.index("*")+1..link.length]
+      end
       # puts title
       # puts title_eng
       # puts publish_date
@@ -323,7 +332,9 @@ namespace :crawl_yahoo do
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
-        
+        if link.index("*")
+          link = link[link.index("*")+1..link.length]
+        end
         # puts title
         # puts title_eng
         # puts publish_date
@@ -424,7 +435,10 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      
+      if link.index("*")
+        link = link[link.index("*")+1..link.length]
+      end
+
       puts title
       puts title_eng
       puts publish_date
@@ -598,6 +612,10 @@ namespace :crawl_yahoo do
         total_s = 0
       end
 
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
+      end
+
       # puts rank + " " + title
       # puts movie_link
       # puts publish_date
@@ -678,6 +696,10 @@ namespace :crawl_yahoo do
         rank_people = str
       rescue Exception => e
         rank_people = "0"
+      end
+
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
       end
 
       # puts rank + " " + title
@@ -763,6 +785,10 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
+      end
+
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
       # puts publish_weeks
@@ -837,6 +863,10 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
+      end
+
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
       # puts publish_date
@@ -889,6 +919,10 @@ namespace :crawl_yahoo do
         end
       rescue Exception => e
         viwer_rating = "0"
+      end
+
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
       end
 
       # puts week_num + " " + duration
@@ -965,6 +999,10 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
+      if movie_link.index("*")
+        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
+      end
+      
       # puts rank + " "+ title + " "
       # puts movie_link
       # puts publish_date
