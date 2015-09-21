@@ -2,6 +2,13 @@ require 'net/http'
 
 namespace :crawl_yahoo do
 
+  def parselink(link)
+    if link != nil && link.index("*")
+      link = link[link.index("*")+1..link.length]
+    end
+    return link
+  end
+
   task :crawl_a_theater_movie_time => :environment do
 
     uri = URI.parse('https://tw.movies.yahoo.com/theater_result.html/id=49')
@@ -40,38 +47,55 @@ namespace :crawl_yahoo do
       end
 
       yahoo_link = items[0].css(".text h4 a")[0].attr("href")
-      if yahoo_link.index("*")
-        yahoo_link = yahoo_link[yahoo_link.index("*")+1..yahoo_link.length]
-      end
+      yahoo_link = parselink(yahoo_link)
+      if yahoo_link != nil && yahoo_link != ""
 
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(:movie_round => 1)
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = yahoo_link
-        mMovie.movie_round = 1
-        mMovie.save
-        YahooMovieWorker.perform_async(mMovie.id)
-      end
+        if Movie.where("yahoo_link = #{yahoo_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{yahoo_link}").first
+          mMovie.update(:movie_round => 1)
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = yahoo_link
+          mMovie.movie_round = 1
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
+        end
 
-      movie_time = ""
-      item.css("span.tmt").each do |time|
+        movie_time = ""
+        item.css("span.tmt").each do |time|
 
-        movie_time = movie_time + time.text + ","
+          movie_time = movie_time + time.text + ","
 
-      end
-      if movie_time != ""
-        movie_time = movie_time[0..movie_time.length - 2]
+        end
+
+        if movie_time != ""
+          movie_time = movie_time[0..movie_time.length - 2]
+        end
+        
+        mMovieTime = MovieTime.new
+        mMovieTime.remark = remark;
+        mMovieTime.movie_title = title;
+        mMovieTime.movie_id = mMovie.id;
+        mMovieTime.movie_time = movie_time
+        mMovieTime.save
+
       end
       
-      mMovieTime = MovieTime.new
-      mMovieTime.remark = remark;
-      mMovieTime.movie_title = title;
-      mMovieTime.movie_id = mMovie.id;
-      mMovieTime.movie_time = movie_time
-      mMovieTime.save
+
+      # if Movie.where('title LIKE ?', "#{title}").size != 0
+      #   mMovie = Movie.where('title LIKE ?', "#{title}").first
+      #   mMovie.update(:movie_round => 1)
+      # else
+      #   mMovie = Movie.new
+      #   mMovie.title = title
+      #   mMovie.yahoo_link = yahoo_link
+      #   mMovie.movie_round = 1
+      #   mMovie.save
+      #   YahooMovieWorker.perform_async(mMovie.id)
+      # end
+
+      
 
     end
   end
@@ -94,29 +118,30 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      if link.index("*")
-        link = link[link.index("*")+1..link.length]
-      end
+      link = parselink(link)
       # puts title
+      if link != nil && link != ""
 
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(:movie_round => 1)
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.title_eng = title_eng
-        mMovie.publish_date = publish_date
-        begin
-          mMovie.publish_date_date = publish_date.to_date
-        rescue Exception => e
-          
+        if Movie.where("yahoo_link = #{link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{link}").first
+          mMovie.update(:movie_round => 1)
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.title_eng = title_eng
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
+          mMovie.small_pic = small_pic
+          mMovie.yahoo_link = link
+          mMovie.movie_round = 1
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
         end
-        mMovie.small_pic = small_pic
-        mMovie.yahoo_link = link
-        mMovie.movie_round = 1
-        mMovie.save
-        YahooMovieWorker.perform_async(mMovie.id)
+
       end
 
     end
@@ -141,29 +166,29 @@ namespace :crawl_yahoo do
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
-        if link.index("*")
-          link = link[link.index("*")+1..link.length]
-        end
-        # puts title
+        link = parselink(link)
+        if link != nil && link != ""
 
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
-          mMovie.update(:movie_round => 1)
-        else
-          mMovie = Movie.new
-          mMovie.title = title
-          mMovie.title_eng = title_eng
-          mMovie.publish_date = publish_date
-          begin
-            mMovie.publish_date_date = publish_date.to_date
-          rescue Exception => e
-            
+          if Movie.where("yahoo_link = #{link}").size != 0
+            mMovie = Movie.where("yahoo_link = #{link}").first
+            mMovie.update(:movie_round => 1)
+          else
+            mMovie = Movie.new
+            mMovie.title = title
+            mMovie.title_eng = title_eng
+            mMovie.publish_date = publish_date
+            begin
+              mMovie.publish_date_date = publish_date.to_date
+            rescue Exception => e
+              
+            end
+            mMovie.small_pic = small_pic
+            mMovie.yahoo_link = link
+            mMovie.movie_round = 1
+            mMovie.save
+            YahooMovieWorker.perform_async(mMovie.id)
+
           end
-          mMovie.small_pic = small_pic
-          mMovie.yahoo_link = link
-          mMovie.movie_round = 1
-          mMovie.save
-          YahooMovieWorker.perform_async(mMovie.id)
         end
 
       end
@@ -278,36 +303,31 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      if link.index("*")
-        link = link[link.index("*")+1..link.length]
-      end
-      # puts title
-      # puts title_eng
-      # puts publish_date
-      # puts small_pic
-      # puts link
+      link = parselink(link)
+      if link != nil && link != ""
 
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        # puts title
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.movie_round = 3
-        mMovie.save
-        # mMovie.update(:movie_round =>3)
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.title_eng = title_eng
-        mMovie.publish_date = publish_date
-        begin
-          mMovie.publish_date_date = publish_date.to_date
-        rescue Exception => e
-          
+        if Movie.where("yahoo_link = #{link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{link}").first
+          mMovie.movie_round = 3
+          mMovie.save
+          # mMovie.update(:movie_round =>3)
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.title_eng = title_eng
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
+          mMovie.small_pic = small_pic
+          mMovie.yahoo_link = link
+          mMovie.movie_round = 3
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
         end
-        mMovie.small_pic = small_pic
-        mMovie.yahoo_link = link
-        mMovie.movie_round = 3
-        mMovie.save
-        YahooMovieWorker.perform_async(mMovie.id)
+
       end
 
     end
@@ -332,33 +352,29 @@ namespace :crawl_yahoo do
         publish_date = movie.css("span.date span").text
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
-        if link.index("*")
-          link = link[link.index("*")+1..link.length]
-        end
-        # puts title
-        # puts title_eng
-        # puts publish_date
-        # puts small_pic
-        # puts link
+        link = parselink(link)
+        if link != nil && link != ""
 
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
-          mMovie.update(:movie_round => 3)
-        else
-          mMovie = Movie.new
-          mMovie.title = title
-          mMovie.title_eng = title_eng
-          mMovie.publish_date = publish_date
-          begin
-            mMovie.publish_date_date = publish_date.to_date
-          rescue Exception => e
-            
+          if Movie.where("yahoo_link = #{link}").size != 0
+            mMovie = Movie.where("yahoo_link = #{link}").first
+            mMovie.update(:movie_round => 3)
+          else
+            mMovie = Movie.new
+            mMovie.title = title
+            mMovie.title_eng = title_eng
+            mMovie.publish_date = publish_date
+            begin
+              mMovie.publish_date_date = publish_date.to_date
+            rescue Exception => e
+              
+            end
+            mMovie.small_pic = small_pic
+            mMovie.yahoo_link = link
+            mMovie.movie_round = 3
+            mMovie.save
+            YahooMovieWorker.perform_async(mMovie.id)
           end
-          mMovie.small_pic = small_pic
-          mMovie.yahoo_link = link
-          mMovie.movie_round = 3
-          mMovie.save
-          YahooMovieWorker.perform_async(mMovie.id)
+
         end
 
       end
@@ -435,9 +451,7 @@ namespace :crawl_yahoo do
       publish_date = movie.css("span.date span").text
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
-      if link.index("*")
-        link = link[link.index("*")+1..link.length]
-      end
+      link = parselink(link)
 
       puts title
       puts title_eng
@@ -445,26 +459,30 @@ namespace :crawl_yahoo do
       puts small_pic
       puts link
 
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-        mMovie.update(:movie_round => 1)
-        mMovie.update(:is_this_week_new => true)
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.title_eng = title_eng
-        mMovie.publish_date = publish_date
-        begin
-          mMovie.publish_date_date = publish_date.to_date
-        rescue Exception => e
-          
+      if link != nil && link != ""
+
+        if Movie.where("yahoo_link = #{link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{link}").first
+          mMovie.update(:movie_round => 1)
+          mMovie.update(:is_this_week_new => true)
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.title_eng = title_eng
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
+          mMovie.small_pic = small_pic
+          mMovie.yahoo_link = link
+          mMovie.movie_round = 1
+          mMovie.is_this_week_new = true
+          mMovie.save
+          YahooMovieWorker.perform_async(mMovie.id)
         end
-        mMovie.small_pic = small_pic
-        mMovie.yahoo_link = link
-        mMovie.movie_round = 1
-        mMovie.is_this_week_new = true
-        mMovie.save
-        YahooMovieWorker.perform_async(mMovie.id)
+
       end
 
     end
@@ -612,9 +630,7 @@ namespace :crawl_yahoo do
         total_s = 0
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
+      movie_link = parselink(movie_link)
 
       # puts rank + " " + title
       # puts movie_link
@@ -622,8 +638,8 @@ namespace :crawl_yahoo do
       # puts movie_trailer_link
       # puts expect_people + " / " + total_s
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -650,6 +666,7 @@ namespace :crawl_yahoo do
           
         end
         mMovieRank.save
+        
       end
 
     end
@@ -698,9 +715,7 @@ namespace :crawl_yahoo do
         rank_people = "0"
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
+      movie_link = parselink(movie_link)
 
       # puts rank + " " + title
       # puts movie_link
@@ -708,8 +723,8 @@ namespace :crawl_yahoo do
       # puts movie_trailer_link
       # puts movie_rate + " / " + rank_people
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -785,9 +800,7 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
+      movie_link = parselink(movie_link)
 
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
@@ -795,8 +808,8 @@ namespace :crawl_yahoo do
       # puts movie_trailer_link
       # puts viwer_rating.to_s
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -863,9 +876,7 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
+      movie_link = parselink(movie_link)
 
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
@@ -873,8 +884,8 @@ namespace :crawl_yahoo do
       # puts movie_trailer_link
       # puts viwer_rating.to_s
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -921,9 +932,7 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
+      movie_link = parselink(movie_link)
 
       # puts week_num + " " + duration
       # puts title + " " + show_weeks
@@ -931,8 +940,8 @@ namespace :crawl_yahoo do
       # puts movie_trailer_link
       # puts viwer_rating.to_s
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -999,18 +1008,16 @@ namespace :crawl_yahoo do
         viwer_rating = "0"
       end
 
-      if movie_link.index("*")
-        movie_link = movie_link[movie_link.index("*")+1..movie_link.length]
-      end
-      
+      movie_link = parselink(movie_link)
+
       # puts rank + " "+ title + " "
       # puts movie_link
       # puts publish_date
       # puts movie_trailer_link
       # puts viwer_rating.to_s
       if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where('title LIKE ?', "#{title}").size != 0
-          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        if Movie.where("yahoo_link = #{movie_link}").size != 0
+          mMovie = Movie.where("yahoo_link = #{movie_link}").first
         else
           mMovie = Movie.new
           mMovie.title = title
