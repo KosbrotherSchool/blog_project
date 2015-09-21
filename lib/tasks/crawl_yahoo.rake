@@ -603,34 +603,36 @@ namespace :crawl_yahoo do
       # puts publish_date
       # puts movie_trailer_link
       # puts expect_people + " / " + total_s
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
+        
 
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 5
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.current_rank = rank.to_i
-      begin
-        mMovieRank.expect_people = expect_people.to_i
-      rescue Exception => e
-        
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 5
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.current_rank = rank.to_i
+        begin
+          mMovieRank.expect_people = expect_people.to_i
+        rescue Exception => e
+          
+        end
+        begin
+          mMovieRank.total_people =  total_s.to_i
+        rescue Exception => e
+          
+        end
+        mMovieRank.save
       end
-      begin
-        mMovieRank.total_people =  total_s.to_i
-      rescue Exception => e
-        
-      end
-      mMovieRank.save
 
     end
 
@@ -683,31 +685,32 @@ namespace :crawl_yahoo do
       # puts publish_date
       # puts movie_trailer_link
       # puts movie_rate + " / " + rank_people
-
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
-
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 6
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.current_rank = rank.to_i
-      mMovieRank.satisfied_num = movie_rate
-      begin
-        mMovieRank.total_people =  rank_people.to_i
-      rescue Exception => e
         
+
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 6
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.current_rank = rank.to_i
+        mMovieRank.satisfied_num = movie_rate
+        begin
+          mMovieRank.total_people =  rank_people.to_i
+        rescue Exception => e
+          
+        end
+        mMovieRank.save
       end
-      mMovieRank.save
 
     end
 
@@ -765,27 +768,28 @@ namespace :crawl_yahoo do
       # puts publish_weeks
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
+        
 
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 1
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.current_rank = rank.to_i
-      mMovieRank.last_week_rank = last_week_rank.to_i
-      mMovieRank.satisfied_num = viwer_rating.to_s
-      mMovieRank.save
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 1
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.current_rank = rank.to_i
+        mMovieRank.last_week_rank = last_week_rank.to_i
+        mMovieRank.satisfied_num = viwer_rating.to_s
+        mMovieRank.save
+      end
 
     end 
 
@@ -838,27 +842,28 @@ namespace :crawl_yahoo do
       # puts publish_date
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
+        
 
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 2
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.current_rank = rank.to_i
-      mMovieRank.last_week_rank = last_week_rank.to_i
-      mMovieRank.satisfied_num = viwer_rating.to_s
-      mMovieRank.save
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 2
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.current_rank = rank.to_i
+        mMovieRank.last_week_rank = last_week_rank.to_i
+        mMovieRank.satisfied_num = viwer_rating.to_s
+        mMovieRank.save
+      end
 
     end
 
@@ -891,28 +896,29 @@ namespace :crawl_yahoo do
       # puts movie_link
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
+        
 
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 3
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.the_week = week_num
-      mMovieRank.static_duration = duration
-      mMovieRank.publish_weeks = show_weeks
-      mMovieRank.satisfied_num = viwer_rating.to_s
-      mMovieRank.save
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 3
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.the_week = week_num
+        mMovieRank.static_duration = duration
+        mMovieRank.publish_weeks = show_weeks
+        mMovieRank.satisfied_num = viwer_rating.to_s
+        mMovieRank.save
+      end
 
     end
 
@@ -964,26 +970,27 @@ namespace :crawl_yahoo do
       # puts publish_date
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-
-      if Movie.where('title LIKE ?', "#{title}").size != 0
-        mMovie = Movie.where('title LIKE ?', "#{title}").first
-      else
-        mMovie = Movie.new
-        mMovie.title = title
-        mMovie.yahoo_link = movie_link
-        mMovie.save
-        if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
-          YahooMovieWorker.perform_async(mMovie.id)
+      if title != "" && movie_link != nil && movie_link != ""
+        if Movie.where('title LIKE ?', "#{title}").size != 0
+          mMovie = Movie.where('title LIKE ?', "#{title}").first
+        else
+          mMovie = Movie.new
+          mMovie.title = title
+          mMovie.yahoo_link = movie_link
+          mMovie.save
+          if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
+            YahooMovieWorker.perform_async(mMovie.id)
+          end
         end
-      end
-      
+        
 
-      mMovieRank = MovieRank.new
-      mMovieRank.rank_type = 4
-      mMovieRank.movie_id = mMovie.id
-      mMovieRank.current_rank = rank.to_i
-      mMovieRank.satisfied_num = viwer_rating.to_s
-      mMovieRank.save
+        mMovieRank = MovieRank.new
+        mMovieRank.rank_type = 4
+        mMovieRank.movie_id = mMovie.id
+        mMovieRank.current_rank = rank.to_i
+        mMovieRank.satisfied_num = viwer_rating.to_s
+        mMovieRank.save
+      end
 
     end
 
