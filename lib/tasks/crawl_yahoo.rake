@@ -9,95 +9,12 @@ namespace :crawl_yahoo do
     return link
   end
 
-  task :crawl_a_theater_movie_time => :environment do
-
-    uri = URI.parse('https://tw.movies.yahoo.com/theater_result.html/id=49')
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
-    request = Net::HTTP::Get.new(uri.request_uri)
-    res = http.request(request)
-    doc = Nokogiri::HTML(res.body)
-
-    items = doc.css(".vlist .item")
-    items.each do |item|
-
-      title = item.css(".text h4").text.strip
-
-      remark = ""
-      item.css(".mvtype img").each do |img|
-        if img.attr("src").index("digital.gif")
-          remark = remark + "數位,"
-        end
-        if img.attr("src").index("chi.gif")
-          remark = remark + "中文,"
-        end
-        if img.attr("src").index("imax.gif")
-          remark = remark + "IMAX,"
-        end
-        if img.attr("src").index("3d.gif")
-          remark = remark + "3D,"
-        end
-        if img.attr("src").index("atmos.gif")
-          remark = remark + "Atmos,"
-        end
-      end
-      if remark != ""
-        remark = remark[0..remark.length - 2]
-      end
-
-      yahoo_link = items[0].css(".text h4 a")[0].attr("href")
-      yahoo_link = parselink(yahoo_link)
-      if yahoo_link != nil && yahoo_link != ""
-
-        if Movie.where("yahoo_link = #{yahoo_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{yahoo_link}").first
-          mMovie.update(:movie_round => 1)
-        else
-          mMovie = Movie.new
-          mMovie.title = title
-          mMovie.yahoo_link = yahoo_link
-          mMovie.movie_round = 1
-          mMovie.save
-          YahooMovieWorker.perform_async(mMovie.id)
-        end
-
-        movie_time = ""
-        item.css("span.tmt").each do |time|
-
-          movie_time = movie_time + time.text + ","
-
-        end
-
-        if movie_time != ""
-          movie_time = movie_time[0..movie_time.length - 2]
-        end
-        
-        mMovieTime = MovieTime.new
-        mMovieTime.remark = remark;
-        mMovieTime.movie_title = title;
-        mMovieTime.movie_id = mMovie.id;
-        mMovieTime.movie_time = movie_time
-        mMovieTime.save
-
-      end
-      
-
-      # if Movie.where('title LIKE ?', "#{title}").size != 0
-      #   mMovie = Movie.where('title LIKE ?', "#{title}").first
-      #   mMovie.update(:movie_round => 1)
-      # else
-      #   mMovie = Movie.new
-      #   mMovie.title = title
-      #   mMovie.yahoo_link = yahoo_link
-      #   mMovie.movie_round = 1
-      #   mMovie.save
-      #   YahooMovieWorker.perform_async(mMovie.id)
-      # end
-
-      
-
+  def parseYahooId(link)
+    if link != nil && link.index('id=')
+      yahoo_id = link[link.index('id=')+3..link.length].to_i
+      return yahoo_id
     end
+    return nil
   end
 
   task :crawl_publishing_moives => :environment do
@@ -119,11 +36,11 @@ namespace :crawl_yahoo do
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
       link = parselink(link)
-      # puts title
-      if link != nil && link != ""
+      yahoo_id = parseYahooId(link)
 
-        if Movie.where("yahoo_link = #{link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
           mMovie.update(:movie_round => 1)
         else
           mMovie = Movie.new
@@ -167,10 +84,11 @@ namespace :crawl_yahoo do
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
         link = parselink(link)
-        if link != nil && link != ""
+        yahoo_id = parseYahooId(link)
 
-          if Movie.where("yahoo_link = #{link}").size != 0
-            mMovie = Movie.where("yahoo_link = #{link}").first
+        if yahoo_id != nil
+          if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+            mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
             mMovie.update(:movie_round => 1)
           else
             mMovie = Movie.new
@@ -304,10 +222,11 @@ namespace :crawl_yahoo do
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
       link = parselink(link)
-      if link != nil && link != ""
+      yahoo_id = parseYahooId(link)
 
-        if Movie.where("yahoo_link = #{link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
           mMovie.movie_round = 3
           mMovie.save
           # mMovie.update(:movie_round =>3)
@@ -353,10 +272,11 @@ namespace :crawl_yahoo do
         small_pic = movie.css(".img a img")[0].attr("src")
         link = movie.css(".text h4 a")[0].attr("href")
         link = parselink(link)
-        if link != nil && link != ""
+        yahoo_id = parseYahooId(link)
 
-          if Movie.where("yahoo_link = #{link}").size != 0
-            mMovie = Movie.where("yahoo_link = #{link}").first
+        if yahoo_id != nil
+          if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+            mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
             mMovie.update(:movie_round => 3)
           else
             mMovie = Movie.new
@@ -452,17 +372,13 @@ namespace :crawl_yahoo do
       small_pic = movie.css(".img a img")[0].attr("src")
       link = movie.css(".text h4 a")[0].attr("href")
       link = parselink(link)
+      yahoo_id = parseYahooId(link)
 
       puts title
-      puts title_eng
-      puts publish_date
-      puts small_pic
-      puts link
 
-      if link != nil && link != ""
-
-        if Movie.where("yahoo_link = #{link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
           mMovie.update(:movie_round => 1)
           mMovie.update(:is_this_week_new => true)
         else
@@ -484,102 +400,6 @@ namespace :crawl_yahoo do
         end
 
       end
-
-    end
-
-  end
-
-  task :crawl_article_list => :environment do
-
-    include Capybara::DSL
-    Capybara.current_driver = :selenium_chrome
-    Capybara.app_host = 'https://tw.movies.yahoo.com'
-
-    puts "Crawl News List"
-    page.visit '/article_news_list.html?p=1'
-    page_no = Nokogiri::HTML(page.html)
-    page_no.css(".item").last.remove
-    all_news = page_no.css(".item")
-    all_news.each do |news|
-
-      news_ul = news.css("ul")[0]
-      news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
-      news_info = news_ul.children[0].children[3].children[0].to_s
-      news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
-      pic_link = news.css(".pict a").children[0].attr("src")
-
-      # puts news_title
-      # puts news_link
-      # puts news_info
-      # puts news_update_date
-      # puts pic_link
-
-    end
-
-    puts "Crawl Movie Guide"
-    page.visit '/article_movieguide_list.html?p=1'
-    page_no = Nokogiri::HTML(page.html)
-    page_no.css(".item").last.remove
-    all_news = page_no.css(".item")
-    all_news.each do |news|
-
-      news_ul = news.css("ul")[0]
-      news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
-      news_info = news_ul.children[0].children[3].children[0].to_s
-      news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
-      pic_link = news.css(".pict a").children[0].attr("src")
-
-      # puts news_title
-      # puts news_link
-      # puts news_info
-      # puts news_update_date
-      # puts pic_link
-
-    end
-
-    puts "Crawl Review List"
-    page.visit '/article_review_list.html'
-    page_no = Nokogiri::HTML(page.html)
-    page_no.css(".item").last.remove
-    all_news = page_no.css(".item")
-    all_news.each do |news|
-
-      news_ul = news.css("ul")[0]
-      news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
-      news_info = news_ul.children[0].children[3].children[0].to_s
-      news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
-      pic_link = news.css(".pict a").children[0].attr("src")
-
-      # puts news_title
-      # puts news_link
-      # puts news_info
-      # puts news_update_date
-      # puts pic_link
-
-    end
-
-    puts "Crawl Feature List"
-    page.visit '/article_features_list.html'
-    page_no = Nokogiri::HTML(page.html)
-    page_no.css(".item").last.remove
-    all_news = page_no.css(".item")
-    all_news.each do |news|
-
-      news_ul = news.css("ul")[0]
-      news_link = news_ul.children[0].children[3].children[0].attr("href")
-      news_title = news_ul.children[0].children[3].children[0].children[0].to_s.strip
-      news_info = news_ul.children[0].children[5].children[0].to_s
-      news_update_date = news_ul.children[0].children[7].children[1].children[0].to_s
-      pic_link = news.css(".pict a").children[0].attr("src")
-
-      puts news_title
-      puts news_link
-      puts news_info
-      puts news_update_date
-      puts pic_link
 
     end
 
@@ -631,19 +451,16 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
-      # puts rank + " " + title
-      # puts movie_link
-      # puts publish_date
-      # puts movie_trailer_link
-      # puts expect_people + " / " + total_s
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
@@ -716,19 +533,16 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
-      # puts rank + " " + title
-      # puts movie_link
-      # puts publish_date
-      # puts movie_trailer_link
-      # puts movie_rate + " / " + rank_people
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
@@ -801,19 +615,21 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
       # puts publish_weeks
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
@@ -877,19 +693,21 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
       # puts rank + " " + last_week_rank + " "+ title + " "
       # puts movie_link
       # puts publish_date
       # puts movie_trailer_link
       # puts viwer_rating.to_s
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
@@ -933,25 +751,23 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
-      # puts week_num + " " + duration
-      # puts title + " " + show_weeks
-      # puts movie_link
-      # puts movie_trailer_link
-      # puts viwer_rating.to_s
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
           end
         end
         
+        puts 'new week Rank'
 
         mMovieRank = MovieRank.new
         mMovieRank.rank_type = 3
@@ -1009,26 +825,22 @@ namespace :crawl_yahoo do
       end
 
       movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
-      # puts rank + " "+ title + " "
-      # puts movie_link
-      # puts publish_date
-      # puts movie_trailer_link
-      # puts viwer_rating.to_s
-      if title != "" && movie_link != nil && movie_link != ""
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = movie_link
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           if mMovie.yahoo_link != nil && mMovie.yahoo_link != ""
             YahooMovieWorker.perform_async(mMovie.id)
           end
         end
         
-
         mMovieRank = MovieRank.new
         mMovieRank.rank_type = 4
         mMovieRank.movie_id = mMovie.id
@@ -1036,37 +848,6 @@ namespace :crawl_yahoo do
         mMovieRank.satisfied_num = viwer_rating.to_s
         mMovieRank.save
       end
-
-    end
-
-  end
-
-  task :crawl_movie_news => :environment do
-
-    uri = URI.parse('https://tw.movies.yahoo.com/article_news_list.html?p=1')
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
-    request = Net::HTTP::Get.new(uri.request_uri)
-    res = http.request(request)
-
-    page_no = Nokogiri::HTML(res.body)
-    page_no.css(".item").last.remove
-    all_news = page_no.css(".item")
-    all_news.each do |news|
-
-      news_ul = news.css("ul")[0]
-      news_link = news_ul.children[0].children[1].children[0].attr("href")
-      news_title = news_ul.children[0].children[1].children[0].children[0].to_s.strip
-      news_info = news_ul.children[0].children[3].children[0].to_s
-      news_update_date = news_ul.children[0].children[5].children[1].children[0].to_s
-      pic_link = news.css(".pict a").children[0].attr("src")
-
-      puts news_title
-      puts news_link
-      puts news_info
-      puts news_update_date
-      puts pic_link
 
     end
 

@@ -15,6 +15,18 @@ namespace :other_task do
 		end
 	end
 
+	task :give_yahoo_id_to_moive => :environment do
+
+		Movie.all.each do |movie|
+			puts movie.title
+			link = movie.yahoo_link
+			yahoo_id = link[link.index('id=')+3..link.length].to_i
+			movie.yahoo_id = yahoo_id
+			movie.save
+		end
+
+	end
+
 	task :check_ruby_return_method => :environment do
 		num = getANum()
 		puts num.to_s

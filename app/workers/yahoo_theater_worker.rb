@@ -4,6 +4,21 @@ class YahooTheaterWorker
   include Sidekiq::Worker
   sidekiq_options queue: "movie"
 
+  def parselink(link)
+    if link != nil && link.index("*")
+      link = link[link.index("*")+1..link.length]
+    end
+    return link
+  end
+
+  def parseYahooId(link)
+    if link != nil && link.index('id=')
+      yahoo_id = link[link.index('id=')+3..link.length].to_i
+      return yahoo_id
+    end
+    return nil
+  end
+
   def perform(theater_id)
     theater = Theater.find(theater_id)
     uri = URI.parse(theater.yahoo_link)
@@ -41,17 +56,20 @@ class YahooTheaterWorker
         remark = remark[0..remark.length - 2]
       end
 
-      yahoo_link = item.css(".text h4 a")[0].attr("href")
-      if yahoo_link != nil && yahoo_link != ""
+      movie_link = item.css(".text h4 a")[0].attr("href")
+      movie_link = parselink(movie_link)
+      yahoo_id = parseYahooId(movie_link)
 
-        if Movie.where("yahoo_link = #{movie_link}").size != 0
-          mMovie = Movie.where("yahoo_link = #{movie_link}").first
+      if yahoo_id != nil
+        if Movie.where("yahoo_id = #{yahoo_id}").size != 0
+          mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
           mMovie.update(:movie_round => 1)
         else
           mMovie = Movie.new
           mMovie.title = title
           mMovie.yahoo_link = yahoo_link
           mMovie.movie_round = 1
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           YahooMovieWorker.perform_async(mMovie.id)
         end
