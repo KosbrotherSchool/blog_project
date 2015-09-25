@@ -228,8 +228,13 @@ namespace :crawl_yahoo do
         if Movie.where("yahoo_id = #{yahoo_id}").size != 0
           mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
           mMovie.movie_round = 3
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
           mMovie.save
-          # mMovie.update(:movie_round =>3)
         else
           mMovie = Movie.new
           mMovie.title = title
@@ -277,7 +282,14 @@ namespace :crawl_yahoo do
         if yahoo_id != nil
           if Movie.where("yahoo_id = #{yahoo_id}").size != 0
             mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
-            mMovie.update(:movie_round => 3)
+            mMovie.movie_round = 3
+            mMovie.publish_date = publish_date
+            begin
+              mMovie.publish_date_date = publish_date.to_date
+            rescue Exception => e
+              
+            end
+            mMovie.save
           else
             mMovie = Movie.new
             mMovie.title = title
@@ -379,8 +391,15 @@ namespace :crawl_yahoo do
       if yahoo_id != nil
         if Movie.where("yahoo_id = #{yahoo_id}").size != 0
           mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
-          mMovie.update(:movie_round => 1)
-          mMovie.update(:is_this_week_new => true)
+          mMovie.movie_round = 1
+          mMovie.is_this_week_new = true
+          mMovie.publish_date = publish_date
+          begin
+            mMovie.publish_date_date = publish_date.to_date
+          rescue Exception => e
+            
+          end
+          mMovie.save
         else
           mMovie = Movie.new
           mMovie.title = title
