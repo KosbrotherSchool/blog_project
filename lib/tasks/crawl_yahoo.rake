@@ -309,7 +309,7 @@ namespace :crawl_yahoo do
     Capybara.current_driver = :selenium_chrome
     Capybara.app_host = 'https://tw.movies.yahoo.com'
 
-    page.visit '/movieinfo_main.html/id=5631'
+    page.visit '/movieinfo_main.html/id=5757'
     click_on 'yuievtautoid-1'
     page_no = Nokogiri::HTML(page.html)
 

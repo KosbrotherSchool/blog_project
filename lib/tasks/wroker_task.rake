@@ -39,7 +39,7 @@ namespace :worker_task do
 	end
 
 	task :run_yahoo_theater_get_movie_time => :environment do
-		Theater.all.each do |theater|
+		Theater.where("theater_open_eye_link is NULL").each do |theater|
 			YahooTheaterWorker.perform_async(theater.id)
 		end
 	end
