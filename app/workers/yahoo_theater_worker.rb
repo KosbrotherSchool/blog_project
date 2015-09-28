@@ -67,7 +67,7 @@ class YahooTheaterWorker
         else
           mMovie = Movie.new
           mMovie.title = title
-          mMovie.yahoo_link = yahoo_link
+          mMovie.yahoo_link = movie_link
           mMovie.movie_round = 1
           mMovie.yahoo_id = yahoo_id
           mMovie.save

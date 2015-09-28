@@ -46,6 +46,7 @@ namespace :crawl_yahoo do
           mMovie = Movie.new
           mMovie.title = title
           mMovie.title_eng = title_eng
+          mMovie.yahoo_id = yahoo_id
           mMovie.publish_date = publish_date
           begin
             mMovie.publish_date_date = publish_date.to_date
@@ -94,6 +95,7 @@ namespace :crawl_yahoo do
             mMovie = Movie.new
             mMovie.title = title
             mMovie.title_eng = title_eng
+            mMovie.yahoo_id = yahoo_id
             mMovie.publish_date = publish_date
             begin
               mMovie.publish_date_date = publish_date.to_date
@@ -239,6 +241,7 @@ namespace :crawl_yahoo do
           mMovie = Movie.new
           mMovie.title = title
           mMovie.title_eng = title_eng
+          mMovie.yahoo_id = yahoo_id
           mMovie.publish_date = publish_date
           begin
             mMovie.publish_date_date = publish_date.to_date
@@ -294,6 +297,7 @@ namespace :crawl_yahoo do
             mMovie = Movie.new
             mMovie.title = title
             mMovie.title_eng = title_eng
+            mMovie.yahoo_id = yahoo_id
             mMovie.publish_date = publish_date
             begin
               mMovie.publish_date_date = publish_date.to_date
@@ -785,8 +789,6 @@ namespace :crawl_yahoo do
             YahooMovieWorker.perform_async(mMovie.id)
           end
         end
-        
-        puts 'new week Rank'
 
         mMovieRank = MovieRank.new
         mMovieRank.rank_type = 3

@@ -4,8 +4,8 @@ namespace :other_task do
 
 	task :crawl_single_open_eye_theater => :environment do
 
-		# 47 中源戲院, 79 新榮戲院
-		mTheater = Theater.find(79)
+		# 47 中源戲院, 79 新榮戲院, 39朝代戲院, 麻豆戲院 80
+		mTheater = Theater.find(80)
 		url = URI.parse(mTheater.theater_open_eye_link)
 		req = Net::HTTP::Get.new(url.to_s)
 		res = Net::HTTP.start(url.host, url.port) {|http|
@@ -74,9 +74,10 @@ namespace :other_task do
       end
 
       puts movie_title
-			puts movie_link
-			puts movie_remark
-			puts movie_time
+      puts movie_time
+			# puts movie_link
+			# puts movie_remark
+			
 
 			# if movie_title can't match => not save
 			if Movie.where('title LIKE ?', "#{movie_title}")
@@ -84,7 +85,7 @@ namespace :other_task do
 				mMovietime = MovieTime.new
 				mMovietime.remark = movie_remark
 				mMovietime.movie_title = movie_title
-				mMovietime.movie_time = movie_times.to_s
+				mMovietime.movie_time = movie_time
 				mMovietime.movie_time_open_eye_link = movie_link
 				mMovietime.theater_id = mTheater.id
 				mMovietime.area_id = mMovietime.theater.area_id
