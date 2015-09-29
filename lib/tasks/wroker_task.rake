@@ -50,4 +50,14 @@ namespace :worker_task do
 		end
 	end
 
+	task :get_movie_by_yahoo_id => :environment do
+
+		(101..5970).each do |yahoo_id|
+			if Movie.where("yahoo_id = #{yahoo_id}").size == 0
+				YahooMovieWorkerByYahooID.perform_async(yahoo_id)
+			end
+		end
+
+	end
+
 end

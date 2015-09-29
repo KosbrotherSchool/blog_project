@@ -1,11 +1,12 @@
 require 'net/http'
 
-namespace :other_task do
+class OpenEyeTheaterWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: "movie"
 
-	task :crawl_single_open_eye_theater => :environment do
+  def perform(theater_id)
 
-		# 47 中源戲院, 79 新榮戲院, 39朝代戲院, 麻豆戲院 80
-		mTheater = Theater.find(80)
+  	mTheater = Theater.find(theater_id)
 		url = URI.parse(mTheater.theater_open_eye_link)
 		req = Net::HTTP::Get.new(url.to_s)
 		res = Net::HTTP.start(url.host, url.port) {|http|
@@ -58,6 +59,7 @@ namespace :other_task do
 			end
 
 			link = movie_link
+			link = movie.open_eye_link
 			if link.index("film_id=")
 				open_eye_id = link[link.index("film_id=")+8..link.length]
 			else
@@ -88,7 +90,7 @@ namespace :other_task do
 
 			# if movie_title can't match => not save
 			# if Movie.where('title LIKE ?', "#{movie_title}")
-			if Movie.where("open_eye_id = '#{open_eye_id}'").size != 0
+			if Movie.where("open_eye_id = #{open_eye_id}").size != 0
 
 				mMovietime = MovieTime.new
 				mMovietime.remark = movie_remark
@@ -98,7 +100,7 @@ namespace :other_task do
 				mMovietime.theater_id = mTheater.id
 				mMovietime.area_id = mMovietime.theater.area_id
 
-				mMovie = Movie.where("open_eye_id = '#{open_eye_id}'").first
+				mMovie = Movie.where("open_eye_id = #{open_eye_id}").first
 				mMovietime.movie_id = mMovie.id
 				mMovietime.movie_photo = mMovie.small_pic
 				
@@ -119,58 +121,6 @@ namespace :other_task do
 
 		end
 
-	end
-
-	task :modify_movie_yahoo_link => :environment do
-		Movie.all.each do |movie|
-
-			link = movie.yahoo_link
-			if link != nil && link.index("*")
-				link = link[link.index("*")+1..link.length]
-				movie.yahoo_link = link
-				movie.save
-			end
-
-		end
-	end
-
-	task :give_yahoo_id_to_moive => :environment do
-
-		Movie.where("yahoo_id is null").each do |movie|
-			puts movie.title
-			link = movie.yahoo_link
-			yahoo_id = link[link.index('id=')+3..link.length].to_i
-			movie.yahoo_id = yahoo_id
-			movie.save
-		end
-
-	end
-
-	task :give_open_eye_id_to_movie => :environment do
-
-		Movie.where("open_eye_link is NOT NULL and open_eye_id is NULL").each do |movie|
-
-			puts movie.title
-			link = movie.open_eye_link
-			if link.index("film_id=")
-				open_eye_id = link[link.index("film_id=")+8..link.length]
-			else
-				open_eye_id = link[link.index("/movie/")+7..link.length-2]
-			end
-			movie.open_eye_id = open_eye_id
-			movie.save
-
-		end
-
-	end
-
-	task :check_ruby_return_method => :environment do
-		num = getANum()
-		puts num.to_s
-	end
-
-	def getANum()
-		return 10
-	end
+  end
 
 end

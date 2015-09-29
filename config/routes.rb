@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     get 'movie/photos'
     get 'movie/trailers'
     get 'movie/search'
+    get 'movie/open_link_list'
+    patch 'movie/update_open_link'
   end
 
   get 'pages/index'

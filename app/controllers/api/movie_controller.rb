@@ -111,7 +111,29 @@ class Api::MovieController < ApplicationController
       columns = YoutubeColumn.where("is_show = true").order('id DESC').paginate(:page => params[:page], :per_page => 10)
       render :json => columns
     end
+  end
+
+  def update_open_link
+
+    movie_id = params[:key]
+    movie = Movie.find(movie_id)
+    movie.open_eye_link = params[:movie][:open_eye_link]
+    link = params[:movie][:open_eye_link]
+      if link.index("film_id=")
+        open_eye_id = link[link.index("film_id=")+8..link.length]
+      else
+        open_eye_id = link[link.index("/movie/")+7..link.length-2]
+      end
+    movie.open_eye_id = open_eye_id
+    movie.save
+    redirect_to root_path+"api/movie/open_link_list?page=1"
+
+  end
+
+  def open_link_list
     
+    @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 5)
+
   end
 
 end

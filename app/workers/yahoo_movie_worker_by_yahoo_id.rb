@@ -83,6 +83,8 @@ class YahooMovieWorkerByYahooID
 		   	mMovie.large_pic = large_pic
 		   	mMovie.movie_class = movie_class
 		   	mMovie.is_yahoo_crawled = true
+		   	mMovie.yahoo_id = yahoo_id
+		   	mMovie.yahoo_link = "https://tw.movies.yahoo.com/movieinfo_main.html/id=" + yahoo_id.to_s
 		   	mMovie.save
 		  end
 	  rescue Exception => e

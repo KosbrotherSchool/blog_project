@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150921234624) do
+ActiveRecord::Schema.define(version: 20150929002859) do
 
   create_table "areas", force: true do |t|
     t.string   "name"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20150921234624) do
     t.integer  "photo_size",          default: 0
     t.integer  "trailer_size",        default: 0
     t.integer  "yahoo_id"
+    t.string   "open_eye_id"
   end
 
   create_table "photos", force: true do |t|

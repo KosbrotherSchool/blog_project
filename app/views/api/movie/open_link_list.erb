@@ -1,0 +1,22 @@
+<table class="table" border=1>
+	<tr>
+		<td>電影名稱</td>
+		<td>電影英文名稱</td>
+		<td>open_eye_link</td>
+		<td>open_eye_id</td>
+		<td>送出</td>
+	</tr>
+	<% @movies.each do |movie|%>
+		<%= form_for movie, :url => api_movie_update_open_link_path do |form| %>
+			<tr>
+				<td><%= movie.title %></td>
+				<td><%= movie.title_eng %></td>
+				<td><%= form.text_field :open_eye_link, :placeholder => movie.open_eye_link %></td>
+				<td><%= movie.open_eye_id %></td>
+				<input type="hidden" name="key" value=<%= movie.id %>>
+				<input type="hidden" name="page" value=<%= params[:page] %>>
+				<td><%= form.submit "送出" %></td>
+			</tr>
+		<% end %>
+	<% end %>
+</table>
