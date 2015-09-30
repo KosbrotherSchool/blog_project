@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web, at: '/sidekiq'
 
   namespace :api do
+    get 'movie/version'
     get 'movie/rank_movies'
     get 'movie/movies'
     get 'movie/areas'

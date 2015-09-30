@@ -1,5 +1,9 @@
 class Api::MovieController < ApplicationController
 
+  def version
+    render :json => AppVersion.select("version_name, version_content, version_code").last
+  end
+
   def search
     query = params[:query]
     movies = Movie.select('id, title, publish_date, movie_class, actors, movie_type, small_pic').where('title LIKE ? OR title_eng LIKE ? OR actors LIKE ?', "%#{query}%", "%#{query}%", "%#{query}%").paginate(:page => params[:page], :per_page => 10)
@@ -55,7 +59,7 @@ class Api::MovieController < ApplicationController
       area_id = params[:area].to_i
       theaters = Theater.select("id, name, address, phone, area_id").where(" area_id = #{area_id}")
     else
-      theaters = Theater.select("id, name, address, phone, area_id").all
+      theaters = Theater.select("id, name, address, phone, area_id").where(" theater_open_eye_link is NOT NULL or official_site_link is NOT NULL")
     end
     render :json => theaters
   end
