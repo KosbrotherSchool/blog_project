@@ -55,11 +55,10 @@ class OpenEyeTheaterWorker
 			begin
 				movie_remark = movie.css(".version")[0].children[1].children[0].to_s.gsub("\r","").gsub("\n","").gsub("\t","").gsub(" ","")
 			rescue Exception => e
-				
+				movie_remark = movie.css(".version")[0].children[0].to_s.gsub("\r","").gsub("\n","").gsub("\t","").gsub(" ","")
 			end
 
 			link = movie_link
-			link = movie.open_eye_link
 			if link.index("film_id=")
 				open_eye_id = link[link.index("film_id=")+8..link.length]
 			else
@@ -83,14 +82,14 @@ class OpenEyeTheaterWorker
       end
 
       puts movie_title
-      puts movie_time
+      # puts movie_time
 			# puts movie_link
 			# puts movie_remark
 			
 
 			# if movie_title can't match => not save
 			# if Movie.where('title LIKE ?', "#{movie_title}")
-			if Movie.where("open_eye_id = #{open_eye_id}").size != 0
+			if Movie.where("open_eye_id = '#{open_eye_id}'").size != 0
 
 				mMovietime = MovieTime.new
 				mMovietime.remark = movie_remark
@@ -100,7 +99,7 @@ class OpenEyeTheaterWorker
 				mMovietime.theater_id = mTheater.id
 				mMovietime.area_id = mMovietime.theater.area_id
 
-				mMovie = Movie.where("open_eye_id = #{open_eye_id}").first
+				mMovie = Movie.where("open_eye_id = '#{open_eye_id}'").first
 				mMovietime.movie_id = mMovie.id
 				mMovietime.movie_photo = mMovie.small_pic
 				

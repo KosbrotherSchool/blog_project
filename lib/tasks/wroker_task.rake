@@ -44,6 +44,12 @@ namespace :worker_task do
 		end
 	end
 
+	task :run_open_eye_theater_get_movie_time => :environment do
+		Theater.where("theater_open_eye_link is NOT NULL").each do |theater|
+			OpenEyeTheaterWorker.perform_async(theater.id)
+		end
+	end
+
 	task :run_movie_get_photos_trailers => :environment do
 		Movie.where("open_eye_link IS NOT NULL and is_open_eye_crawled = false ").each do |movie|
 			MovieWorker.perform_async(movie.id)
