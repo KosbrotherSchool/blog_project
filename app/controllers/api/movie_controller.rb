@@ -136,7 +136,7 @@ class Api::MovieController < ApplicationController
 
   def open_link_list
     
-    @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 5)
+    @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 10)
 
   end
 
