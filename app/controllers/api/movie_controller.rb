@@ -142,7 +142,7 @@ class Api::MovieController < ApplicationController
 
   def reviews 
     movie_id = params[:movie_id]
-    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point").where("movie_id = #{movie_id}").order('publish_date DESC').paginate(:page => params[:page], :per_page => 10)
+    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point").where("movie_id = #{movie_id}").order('updated_at DESC').paginate(:page => params[:page], :per_page => 10)
     render :json => reviews
   end
 
@@ -156,7 +156,7 @@ class Api::MovieController < ApplicationController
       review.title = params[:t]
       review.content = params[:c]
       review.point = params[:p]
-      review.publish_date = params[:publish_date]
+      review.publish_date = Date.today.to_s
       review.save
       render :json => "ok"
     rescue Exception => e

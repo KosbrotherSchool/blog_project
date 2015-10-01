@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001011708) do
+ActiveRecord::Schema.define(version: 20151001092325) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 20151001011708) do
     t.string   "author"
     t.string   "title"
     t.text     "content"
-    t.date     "publish_date"
+    t.string   "publish_date"
     t.decimal  "point",        precision: 3, scale: 1
     t.datetime "created_at"
     t.datetime "updated_at"
