@@ -8,6 +8,12 @@ namespace :worker_task do
 		end
 	end
 
+	task :yahoo_first_round_movie_reviews => :environment do
+		Movie.where("movie_round = 1 and is_review_crawled = false and yahoo_id is not NULL").each do |movie|
+			YahooReviewWorker.perform_async(movie.id)
+		end
+	end
+
 	task :run_first_round_movie_workers => :environment do
 		open_eye_first_round_url = "http://www.atmovies.com.tw/movie/movie_now-0.html"
 		ListWorker.perform_async(open_eye_first_round_url, 1)
@@ -51,7 +57,7 @@ namespace :worker_task do
 	end
 
 	task :run_movie_get_photos_trailers => :environment do
-		Movie.where("open_eye_link IS NOT NULL and is_open_eye_crawled = false ").each do |movie|
+		Movie.where("open_eye_link IS NOT NULL and open_eye_link != '' and is_open_eye_crawled = false ").each do |movie|
 			MovieWorker.perform_async(movie.id)
 		end
 	end

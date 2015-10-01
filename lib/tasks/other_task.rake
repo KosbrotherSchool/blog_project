@@ -164,6 +164,16 @@ namespace :other_task do
 
 	end
 
+	task :update_movie_review_size => :environment do
+
+		Movie.where("is_review_crawled = true").each do |movie|
+			puts movie.title
+			movie.review_size = movie.movie_review.size
+			movie.save
+		end
+
+	end
+
 	task :check_ruby_return_method => :environment do
 		num = getANum()
 		puts num.to_s

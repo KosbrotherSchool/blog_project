@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150930040928) do
+ActiveRecord::Schema.define(version: 20151001011708) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -64,6 +64,17 @@ ActiveRecord::Schema.define(version: 20150930040928) do
     t.boolean  "is_show",         default: false
   end
 
+  create_table "movie_reviews", force: true do |t|
+    t.integer  "movie_id"
+    t.string   "author"
+    t.string   "title"
+    t.text     "content"
+    t.date     "publish_date"
+    t.decimal  "point",        precision: 3, scale: 1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "movie_times", force: true do |t|
     t.string   "remark"
     t.string   "movie_title"
@@ -95,16 +106,19 @@ ActiveRecord::Schema.define(version: 20150930040928) do
     t.date     "publish_date_date"
     t.string   "open_eye_link"
     t.string   "yahoo_link"
-    t.boolean  "is_this_week_new",    default: false
-    t.boolean  "is_open_eye_crawled", default: false
-    t.boolean  "is_yahoo_crawled",    default: false
-    t.integer  "movie_round",         default: 0
+    t.boolean  "is_this_week_new",                            default: false
+    t.boolean  "is_open_eye_crawled",                         default: false
+    t.boolean  "is_yahoo_crawled",                            default: false
+    t.integer  "movie_round",                                 default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "photo_size",          default: 0
-    t.integer  "trailer_size",        default: 0
+    t.integer  "photo_size",                                  default: 0
+    t.integer  "trailer_size",                                default: 0
     t.integer  "yahoo_id"
     t.string   "open_eye_id"
+    t.decimal  "point",               precision: 3, scale: 1, default: 0.0
+    t.boolean  "is_review_crawled",                           default: false
+    t.integer  "review_size"
   end
 
   create_table "photos", force: true do |t|

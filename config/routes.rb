@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     get 'movie/search'
     get 'movie/open_link_list'
     patch 'movie/update_open_link'
+    get 'movie/reviews'
+    post 'movie/update_reviews'
   end
 
   get 'pages/index'

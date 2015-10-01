@@ -32,7 +32,7 @@ class Api::MovieController < ApplicationController
     elsif params[:movie_round] != nil
         movie_round = params[:movie_round].to_i
         if movie_round <= 2
-          movies = Movie.select('id, title, movie_class, small_pic').where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
+          movies = Movie.select('id, title, movie_class, small_pic, point').where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 10)
         elsif(movie_round == 3)
           movies = Movie.select('id, title, movie_class, small_pic').where("movie_round = #{movie_round} and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date ASC').paginate(:page => params[:page], :per_page => 10)
         elsif(movie_round == 4)
@@ -138,6 +138,30 @@ class Api::MovieController < ApplicationController
     
     @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 10)
 
+  end
+
+  def reviews 
+    movie_id = params[:movie_id]
+    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point").where("movie_id = #{movie_id}").order('publish_date DESC').paginate(:page => params[:page], :per_page => 10)
+    render :json => reviews
+  end
+
+  skip_before_filter :verify_authenticity_token, :only => :update_reviews
+
+  def update_reviews
+    begin
+      review = MovieReview.new
+      review.movie_id = params[:m]
+      review.author = params[:a]
+      review.title = params[:t]
+      review.content = params[:c]
+      review.point = params[:p]
+      review.publish_date = params[:publish_date]
+      review.save
+      render :json => "ok"
+    rescue Exception => e
+      render :json => "error"
+    end
   end
 
 end
