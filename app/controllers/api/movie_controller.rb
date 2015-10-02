@@ -118,7 +118,6 @@ class Api::MovieController < ApplicationController
   end
 
   def update_open_link
-
     movie_id = params[:key]
     movie = Movie.find(movie_id)
     movie.open_eye_link = params[:movie][:open_eye_link]
@@ -130,8 +129,7 @@ class Api::MovieController < ApplicationController
       end
     movie.open_eye_id = open_eye_id
     movie.save
-    redirect_to root_path+"api/movie/open_link_list?page=1"
-
+    redirect_to root_path+"api/movie/open_link_list?page="+params[:page]
   end
 
   def open_link_list

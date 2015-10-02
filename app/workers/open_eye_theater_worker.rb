@@ -2,7 +2,7 @@ require 'net/http'
 
 class OpenEyeTheaterWorker
   include Sidekiq::Worker
-  sidekiq_options queue: "movie"
+  sidekiq_options queue: "movie_time"
 
   def perform(theater_id)
 
