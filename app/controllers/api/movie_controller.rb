@@ -140,7 +140,7 @@ class Api::MovieController < ApplicationController
 
   def reviews 
     movie_id = params[:movie_id]
-    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point").where("movie_id = #{movie_id}").order('updated_at DESC').paginate(:page => params[:page], :per_page => 10)
+    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point, head_index").where("movie_id = #{movie_id}").order('updated_at DESC').paginate(:page => params[:page], :per_page => 10)
     render :json => reviews
   end
 

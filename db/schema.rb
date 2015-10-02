@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001092325) do
+ActiveRecord::Schema.define(version: 20151002113944) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20151001092325) do
     t.decimal  "point",        precision: 3, scale: 1
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "head_index",                           default: 1
   end
 
   create_table "movie_times", force: true do |t|
