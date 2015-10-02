@@ -155,6 +155,7 @@ class Api::MovieController < ApplicationController
       review.content = params[:c]
       review.point = params[:p]
       review.publish_date = Date.today.to_s
+      review.head_index = params[:h].to_i
       review.save
       render :json => "ok"
     rescue Exception => e
