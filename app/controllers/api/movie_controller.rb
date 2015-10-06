@@ -157,10 +157,22 @@ class Api::MovieController < ApplicationController
       review.publish_date = Date.today.to_s
       review.head_index = params[:h].to_i
       review.save
+
+      movie = Movie.find(params[:m])
+      movie.review_size = review_size + 1
+      movie.save
+
       render :json => "ok"
     rescue Exception => e
       render :json => "error"
     end
+  end
+
+  def blogs
+    
+    blogs = MovieBlog.select("id, title, link, pic_link").all
+    render :json => blogs
+
   end
 
 end

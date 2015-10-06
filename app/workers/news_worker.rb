@@ -1,6 +1,6 @@
 class NewsWorker
   include Sidekiq::Worker
-  sidekiq_options queue: "movie"
+  sidekiq_options queue: "movie_news"
 
   def perform(link, news_type)
     uri = URI.parse(link)
@@ -28,7 +28,13 @@ class NewsWorker
       news_title = news_ul.css("li.text a")[0].text
       news_info = news_ul.css("li.text p")[0].children[0].text
       news_update_date = news_ul.css("span.date span")[0].text
-      pic_link = news.css(".pict img")[0].attr("src")
+
+      pic_link = ""
+      begin
+        pic_link = news.css(".pict img")[0].attr("src")
+      rescue Exception => e
+        
+      end
 
       puts news_title
       

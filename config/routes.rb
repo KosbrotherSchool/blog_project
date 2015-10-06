@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     patch 'movie/update_open_link'
     get 'movie/reviews'
     post 'movie/update_reviews'
+    get 'movie/blogs'
   end
 
   get 'pages/index'
