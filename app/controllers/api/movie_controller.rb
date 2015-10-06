@@ -159,7 +159,7 @@ class Api::MovieController < ApplicationController
       review.save
 
       movie = Movie.find(params[:m])
-      movie.review_size = review_size + 1
+      movie.review_size = movie.review_size + 1
       movie.save
 
       render :json => "ok"
