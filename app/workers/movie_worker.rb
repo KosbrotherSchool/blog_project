@@ -228,16 +228,21 @@ class MovieWorker
   		request = Net::HTTP::Get.new(uri.request_uri)
   		res = http.request(request)
   		hash = JSON.parse(res.body.force_encoding("utf-8"))
-  		trailer_title = hash["items"][0]["snippet"]["title"] #Here will go wrong if no info
-  		
-  		mTrailer = Trailer.new
-  		mTrailer.title = trailer_title
-  		mTrailer.youtube_id = youtube_id
-  		mTrailer.youtube_link = 'https://www.youtube.com/watch?v='+ mTrailer.youtube_id
-  		mTrailer.movie_id = mMovie.id
-  		mTrailer.save
 
-  		mMovie.trailer_size = mMovie.trailer_size + 1
+  		begin
+  			trailer_title = hash["items"][0]["snippet"]["title"] #Here will go wrong if no info
+  			mTrailer = Trailer.new
+	  		mTrailer.title = trailer_title
+	  		mTrailer.youtube_id = youtube_id
+	  		mTrailer.youtube_link = 'https://www.youtube.com/watch?v='+ mTrailer.youtube_id
+	  		mTrailer.movie_id = mMovie.id
+	  		mTrailer.save
+
+	  		mMovie.trailer_size = mMovie.trailer_size + 1
+  		rescue Exception => e
+  			
+  		end
+  		
 		end
 		
 		mMovie.save

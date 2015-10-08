@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     get 'movie/reviews'
     post 'movie/update_reviews'
     get 'movie/blogs'
+    get 'movie/movie_by_time'
   end
 
   get 'pages/index'

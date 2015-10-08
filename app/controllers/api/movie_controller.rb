@@ -169,10 +169,18 @@ class Api::MovieController < ApplicationController
   end
 
   def blogs
-    
     blogs = MovieBlog.select("id, title, link, pic_link").all
     render :json => blogs
+  end
 
+  def movie_by_time
+    # params[:time] need to be like "10:" or "17:" ...
+    if params[:area_id] != nil && params[:theater_id] != nil
+      movie_times = MovieTime.select("remark, movie_title, movie_time, movie_id, theater_id, area_id").where("area_id = #{params[:area_id]} and theater_id = #{params[:theater_id]} and movie_time LIKE '%#{params[:time]}%'")
+    elsif params[:area_id] != nil
+      movie_times = MovieTime.select("remark, movie_title, movie_time, movie_id, theater_id, area_id").where("area_id = #{params[:area_id]} and movie_time LIKE '%#{params[:time]}%'")
+    end
+    render :json => movie_times
   end
 
 end
