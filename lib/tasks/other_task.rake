@@ -2,6 +2,33 @@ require 'net/http'
 
 namespace :other_task do
 
+	task :crawl_this_week_movie_review => :environment do
+
+		Movie.where("is_this_week_new = true").each do |movie|
+			YahooReviewWorker.perform_async(movie.id)
+		end
+
+	end
+
+	task :update_this_week_movie_review_size_and_points => :environment do
+
+		Movie.where("is_this_week_new = true").each do |movie|
+			puts movie.title
+			movie.review_size = movie.movie_review.size
+			if movie.movie_review.size != 0
+				total = 0.0
+				movie.movie_review.each do |review|
+					total = total +review.point
+				end
+				avg = total / movie.review_size
+				movie.point = avg
+			end
+			puts movie.review_size.to_s + " "+movie.point.to_s
+			movie.save
+		end
+
+	end
+
 	task :update_movie_review_size_and_points => :environment do
 
 		Movie.all.each do |movie|

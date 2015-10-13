@@ -18,7 +18,7 @@ class Api::MovieController < ApplicationController
       render :json => movies
     else
       if rank_type == 1
-        movies = MovieRank.select("movies.id, title, small_pic").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true").paginate(:page => params[:page], :per_page => 10)
+        movies = MovieRank.select("movies.id, title, small_pic, point").joins(:movie).where("rank_type = #{rank_type} and yahoo_link is not NULL and is_show = true").paginate(:page => params[:page], :per_page => 10)
         render :json => movies
       end
     end

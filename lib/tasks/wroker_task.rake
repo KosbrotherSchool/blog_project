@@ -15,7 +15,7 @@ task :yahoo_round_zero_movie_reviews => :environment do
 	end
 
 	task :yahoo_first_round_movie_reviews => :environment do
-		Movie.where("movie_round = 1 and is_review_crawled = false and yahoo_id is not NULL").each do |movie|
+		Movie.where("movie_round = 1 and yahoo_id is not NULL").each do |movie|
 			YahooReviewWorker.perform_async(movie.id)
 		end
 	end
