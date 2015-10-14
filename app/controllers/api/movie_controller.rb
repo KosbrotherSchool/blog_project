@@ -183,4 +183,9 @@ class Api::MovieController < ApplicationController
     render :json => movie_times
   end
 
+  def blog_posts
+    posts = BlogPost.select("title, link, pub_date, pic_link").order('pub_date DESC').paginate(:page => params[:page], :per_page => 10)
+    render :json => posts
+  end
+
 end

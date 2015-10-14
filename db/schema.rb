@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006015817) do
+ActiveRecord::Schema.define(version: 20151014013300) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 20151006015817) do
     t.datetime "updated_at"
   end
 
+  create_table "blog_posts", force: true do |t|
+    t.string   "title"
+    t.string   "link"
+    t.date     "pub_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "movie_blog_id"
+    t.string   "pic_link"
+  end
+
   create_table "movie_area_ships", force: true do |t|
     t.integer  "movie_id"
     t.integer  "area_id"
@@ -42,6 +52,7 @@ ActiveRecord::Schema.define(version: 20151006015817) do
     t.string   "pic_link"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "blog_type",  default: 0
   end
 
   create_table "movie_news", force: true do |t|

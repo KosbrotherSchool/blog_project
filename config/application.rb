@@ -21,7 +21,9 @@ module BlogProject
     # config.i18n.default_locale = :de
 
     Capybara.register_driver :selenium_chrome do |app|
-        Capybara::Selenium::Driver.new(app, :browser => :chrome)
+        http_client = Selenium::WebDriver::Remote::Http::Default.new
+        http_client.timeout = 300
+        Capybara::Selenium::Driver.new(app, :browser => :chrome, :http_client => http_client)
     end
 
   end
