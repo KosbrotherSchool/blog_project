@@ -8,7 +8,7 @@ namespace :worker_task do
 		end
 	end
 
-task :yahoo_round_zero_movie_reviews => :environment do
+	task :yahoo_round_zero_movie_reviews => :environment do
 		Movie.where("movie_round = 0 and is_review_crawled = false and yahoo_id is not NULL").each do |movie|
 			YahooReviewWorker.perform_async(movie.id)
 		end

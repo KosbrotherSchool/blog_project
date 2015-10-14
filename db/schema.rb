@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014013300) do
+ActiveRecord::Schema.define(version: 20151014085901) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -36,6 +36,17 @@ ActiveRecord::Schema.define(version: 20151014013300) do
     t.datetime "updated_at"
     t.integer  "movie_blog_id"
     t.string   "pic_link"
+  end
+
+  create_table "messages", force: true do |t|
+    t.string   "author"
+    t.string   "title"
+    t.string   "message_tag"
+    t.text     "content"
+    t.string   "pub_date"
+    t.integer  "view_count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "movie_area_ships", force: true do |t|
