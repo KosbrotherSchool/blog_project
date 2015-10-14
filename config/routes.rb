@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     get 'movie/blogs'
     get 'movie/movie_by_time'
     get 'movie/blog_posts'
+    get 'movie/review_rank'
+    get 'movie/point_rank'
   end
 
   get 'pages/index'
