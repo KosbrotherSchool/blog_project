@@ -194,12 +194,12 @@ class Api::MovieController < ApplicationController
   end
 
   def review_rank
-    movies = Movie.select("id, title, title_eng, movie_class, movie_type, small_pic, publish_date_date, review_size, point").where("movie_round = 1").order('review_size DESC').paginate(:page => params[:page], :per_page => 10)
+    movies = Movie.select("id, title, title_eng, movie_class, movie_type, small_pic, publish_date, review_size, point").where("movie_round = 1").order('review_size DESC').paginate(:page => params[:page], :per_page => 10)
     render :json => movies
   end
 
   def point_rank
-    movies = Movie.select("id, title, title_eng, movie_class, movie_type, small_pic, publish_date_date, review_size, point").where("movie_round = 1").order('point DESC').paginate(:page => params[:page], :per_page => 10)
+    movies = Movie.select("id, title, title_eng, movie_class, movie_type, small_pic, publish_date, review_size, point").where("movie_round = 1").order('point DESC').paginate(:page => params[:page], :per_page => 10)
     render :json => movies
   end
 
