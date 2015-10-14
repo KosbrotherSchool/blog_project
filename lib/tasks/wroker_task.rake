@@ -57,6 +57,7 @@ task :yahoo_round_zero_movie_reviews => :environment do
 	end
 
 	task :run_open_eye_theater_get_movie_time => :environment do
+		Movie.where("movie_round = 1").update_all("movie_round = 0")
 		Theater.where("theater_open_eye_link is NOT NULL").each do |theater|
 			OpenEyeTheaterWorker.perform_async(theater.id)
 		end

@@ -100,6 +100,9 @@ class OpenEyeTheaterWorker
 				mMovietime.area_id = mMovietime.theater.area_id
 
 				mMovie = Movie.where("open_eye_id = '#{open_eye_id}'").first
+				mMovie.movie_round = 1
+				mMovie.save
+
 				mMovietime.movie_id = mMovie.id
 				mMovietime.movie_photo = mMovie.small_pic
 				

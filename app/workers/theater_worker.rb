@@ -19,10 +19,6 @@ class TheaterWorker
 			theater_link = "http://" + doc.css(".title_block a")[1].children[0].to_s.gsub("\r","").gsub("\n","").gsub("\t","").gsub(" ","")
 		end
 		
-		# puts theater_name
-		# puts address
-		# puts phone
-		# puts theater_link
 		if mTheater.address == nil
 			mTheater.update(:address => address)
 		end
