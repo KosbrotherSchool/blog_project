@@ -236,7 +236,7 @@ class Api::MovieController < ApplicationController
 
   def imdb_list
     
-    @movies = Movie.select("id, title, title_eng, imdb_point, imdb_link, potato_point, potato_link, movie_class ").where("movie_round != 0 AND (imdb_point is NULL OR potato_point is NULL OR movie_class = '')").paginate(:page => params[:page], :per_page => 10)
+    @movies = Movie.select("id, title, title_eng, imdb_point, imdb_link, potato_point, potato_link, movie_class ").where("movie_round = 1 AND (imdb_point is NULL OR potato_point is NULL OR movie_class = '')").paginate(:page => params[:page], :per_page => 10)
 
   end
 
