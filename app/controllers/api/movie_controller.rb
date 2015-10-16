@@ -122,26 +122,6 @@ class Api::MovieController < ApplicationController
     end
   end
 
-  def update_open_link
-    movie_id = params[:key]
-    movie = Movie.find(movie_id)
-    movie.open_eye_link = params[:movie][:open_eye_link]
-    link = params[:movie][:open_eye_link]
-      if link.index("film_id=")
-        open_eye_id = link[link.index("film_id=")+8..link.length]
-      else
-        open_eye_id = link[link.index("/movie/")+7..link.length-2]
-      end
-    movie.open_eye_id = open_eye_id
-    movie.save
-    redirect_to root_path+"api/movie/open_link_list?page="+params[:page]
-  end
-
-  def open_link_list
-    
-    @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 10)
-
-  end
 
   def reviews 
     movie_id = params[:movie_id]
@@ -231,6 +211,53 @@ class Api::MovieController < ApplicationController
     rescue Exception => e
       render :json => "error"
     end
+  end
+
+  def update_open_link
+    movie_id = params[:key]
+    movie = Movie.find(movie_id)
+    movie.open_eye_link = params[:movie][:open_eye_link]
+    link = params[:movie][:open_eye_link]
+      if link.index("film_id=")
+        open_eye_id = link[link.index("film_id=")+8..link.length]
+      else
+        open_eye_id = link[link.index("/movie/")+7..link.length-2]
+      end
+    movie.open_eye_id = open_eye_id
+    movie.save
+    redirect_to root_path+"api/movie/open_link_list?page="+params[:page]
+  end
+
+  def open_link_list
+    
+    @movies = Movie.select("id, title, title_eng, open_eye_link, open_eye_id").where("open_eye_link is NULL").paginate(:page => params[:page], :per_page => 10)
+
+  end
+
+  def imdb_list
+    
+    @movies = Movie.select("id, title, title_eng, imdb_point, imdb_link, potato_point, potato_link, movie_class ").where("movie_round != 0 AND (imdb_point is NULL OR potato_point is NULL OR movie_class = '')").paginate(:page => params[:page], :per_page => 10)
+
+  end
+
+  def update_imdb_and_potato_and_class
+    movie_id = params[:key]
+    movie = Movie.find(movie_id)
+    if movie.class == ""
+      movie.movie_class = params[:movie][:movie_class]
+    end
+    
+    if movie.imdb_point == nil
+      movie.imdb_point = params[:movie][:imdb_point]
+      movie.imdb_link = params[:movie][:imdb_link]
+    end
+    
+    if movie.potato_point == nil
+      movie.potato_point = params[:movie][:potato_point]
+      movie.potato_link = params[:movie][:potato_link]
+    end
+    movie.save
+    redirect_to root_path+"api/movie/imdb_list?page="+params[:page]
   end
 
 end

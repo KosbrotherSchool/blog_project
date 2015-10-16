@@ -14,8 +14,6 @@ Rails.application.routes.draw do
     get 'movie/photos'
     get 'movie/trailers'
     get 'movie/search'
-    get 'movie/open_link_list'
-    patch 'movie/update_open_link'
     get 'movie/reviews'
     post 'movie/update_reviews'
     get 'movie/blogs'
@@ -25,6 +23,12 @@ Rails.application.routes.draw do
     get 'movie/point_rank'
     get 'movie/messages'
     post 'movie/update_messages'
+
+    get 'movie/open_link_list'
+    patch 'movie/update_open_link'
+
+    get 'movie/imdb_list'
+    patch 'movie/update_imdb_and_potato_and_class'
   end
 
   get 'pages/index'

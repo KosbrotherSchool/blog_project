@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014085901) do
+ActiveRecord::Schema.define(version: 20151016003303) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -150,6 +150,10 @@ ActiveRecord::Schema.define(version: 20151014085901) do
     t.decimal  "point",               precision: 3, scale: 1, default: 0.0
     t.boolean  "is_review_crawled",                           default: false
     t.integer  "review_size"
+    t.decimal  "imdb_point",          precision: 3, scale: 1
+    t.string   "imdb_link"
+    t.decimal  "potato_point",        precision: 3, scale: 1
+    t.string   "potato_link"
   end
 
   create_table "photos", force: true do |t|
