@@ -2,10 +2,10 @@
 	<tr>
 		<td>電影名稱</td>
 		<td>電影英文名稱</td>
-		<td>電影分級</td>
-		<td>imdb_point</td>
+		<td style="width: 70px">電影分級</td>
+		<td style="width: 70px">imdb_point</td>
 		<td>imdb_link</td>
-		<td>potato_point</td>
+		<td style="width: 70px">potato_point</td>
 		<td>potato_link</td>
 		<td>送出</td>
 	</tr>
@@ -14,10 +14,10 @@
 			<tr>
 				<td><%= movie.title %></td>
 				<td><%= movie.title_eng %></td>
-				<td><%= form.text_field :movie_class, :placeholder => movie.movie_class %></td>
-				<td><%= form.text_field :imdb_point, :placeholder => movie.imdb_point %></td>
+				<td><%= form.text_field :movie_class, :placeholder => movie.movie_class, :style =>"width: 70px" %></td>
+				<td><%= form.text_field :imdb_point, :placeholder => movie.imdb_point, :style =>"width: 70px"%></td>
 				<td><%= form.text_field :imdb_link, :placeholder => movie.imdb_link %></td>
-				<td><%= form.text_field :potato_point, :placeholder => movie.potato_point %></td>
+				<td><%= form.text_field :potato_point, :placeholder => movie.potato_point, :style =>"width: 70px" %></td>
 				<td><%= form.text_field :potato_link, :placeholder => movie.potato_link %></td>
 				<input type="hidden" name="key" value=<%= movie.id %>>
 				<input type="hidden" name="page" value=<%= params[:page] %>>
