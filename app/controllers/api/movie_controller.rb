@@ -241,9 +241,11 @@ class Api::MovieController < ApplicationController
   end
 
   def update_imdb_and_potato_and_class
+
     movie_id = params[:key]
     movie = Movie.find(movie_id)
-    if movie.class == ""
+
+    if movie.movie_class == ""
       movie.movie_class = params[:movie][:movie_class]
     end
     
