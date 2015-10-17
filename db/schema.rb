@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016003303) do
+ActiveRecord::Schema.define(version: 20151017103740) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20151016003303) do
     t.integer  "view_count"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "reply_size",  default: 0
   end
 
   create_table "movie_area_ships", force: true do |t|
@@ -159,6 +160,15 @@ ActiveRecord::Schema.define(version: 20151016003303) do
   create_table "photos", force: true do |t|
     t.string   "photo_link"
     t.integer  "movie_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "replies", force: true do |t|
+    t.integer  "message_id"
+    t.string   "author"
+    t.text     "content"
+    t.string   "pub_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -27,12 +27,19 @@ class YahooReviewWorker
 
 	    total = doc.css(".statistic em").children[0].text.to_i
 
+	    puts total.to_s
 	    # if total > 30
 	    # 	total = 30
 	    # 	page_num = 3
 	    # else
+	    if (total % 10)==0 
+	    	page_num = total / 10
+	    else
 	    	page_num = ((total / 10)).to_i + 1
+	    end
+	    	
 	    # end
+	    puts page_num.to_s
 
 	    movie.point = movie_point
 	    movie.review_size = total
@@ -41,10 +48,15 @@ class YahooReviewWorker
 
 	    reviews = doc.css(".row-container")
 
-	    last_review_date = movie.movie_review.last.publish_date.to_date
-
-
+	    if movie.movie_review.last != nil
+	    	last_review_date = movie.movie_review.last.publish_date.to_date
+	    else
+	    	last_review_date = Date.yesterday
+	    end
+	    
 	  	(1..page_num).each do |page|
+
+	  			puts "here"
 
 	  			page = page_num - page + 1
 
