@@ -44,6 +44,9 @@ class MessageController < ApplicationController
       reply.pub_date = Date.today.to_s
       reply.message_id = params[:message_id]
       reply.save
+      message = Message.find(params[:message_id])
+      message.reply_size = message.reply_size + 1
+      message.save
       render :json => "ok"
     rescue Exception => e
       render :json => "error"
