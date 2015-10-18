@@ -10,7 +10,7 @@ class MessageController < ApplicationController
       array << message.replies.select("author, content, pub_date")
       render :json => array
     else
-      messages = Message.select("id, author, title, message_tag, pub_date, view_count").order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      messages = Message.select("id, author, title, message_tag, pub_date, view_count, reply_size").order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
       render :json => messages
     end  
   end
