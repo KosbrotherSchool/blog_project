@@ -139,7 +139,7 @@ class Api::MovieController < ApplicationController
       review.title = params[:t]
       review.content = params[:c]
       review.point = params[:p]
-      review.publish_date = Date.today.to_s
+      review.publish_date = Time.current.to_date.to_s
       review.head_index = params[:h].to_i
       review.save
 
@@ -204,7 +204,7 @@ class Api::MovieController < ApplicationController
       message.title = params[:t]
       message.message_tag = params[:tag]
       message.content = params[:c]
-      message.pub_date = Date.today.to_s
+      message.pub_date = Time.current.to_date.to_s
       message.view_count = 0;
       message.save
       render :json => "ok"

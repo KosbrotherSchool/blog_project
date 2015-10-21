@@ -24,7 +24,7 @@ class MessageController < ApplicationController
       message.title = params[:t]
       message.message_tag = params[:tag]
       message.content = params[:c]
-      message.pub_date = Date.today.to_s
+      message.pub_date = Time.current.to_date.to_s
       message.view_count = 0;
       message.save
       render :json => "ok"
@@ -41,7 +41,7 @@ class MessageController < ApplicationController
       reply = Reply.new
       reply.author = params[:a]
       reply.content = params[:c]
-      reply.pub_date = Date.today.to_s
+      reply.pub_date = Time.current.to_date.to_s
       reply.message_id = params[:message_id]
       reply.save
       message = Message.find(params[:message_id])
