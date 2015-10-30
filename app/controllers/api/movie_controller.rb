@@ -220,6 +220,8 @@ class Api::MovieController < ApplicationController
     link = params[:movie][:open_eye_link]
       if link.index("film_id=")
         open_eye_id = link[link.index("film_id=")+8..link.length]
+      elsif link.index("filmid=")
+        open_eye_id = link[link.index("filmid=")+7..link.length]
       else
         open_eye_id = link[link.index("/movie/")+7..link.length-2]
       end

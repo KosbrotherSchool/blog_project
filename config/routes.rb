@@ -1,7 +1,5 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
-  
-
   mount Sidekiq::Web, at: '/sidekiq'
 
   namespace :api do
@@ -33,6 +31,11 @@ Rails.application.routes.draw do
     patch 'movie/update_imdb_and_potato_and_class'
 
     post 'movie/update_reply'
+  end
+
+  namespace :api2 do
+    get 'movie/movies'
+    get 'movie/rank_movies'
   end
 
   get 'message/messages'

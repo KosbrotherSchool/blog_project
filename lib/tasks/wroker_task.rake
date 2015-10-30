@@ -2,6 +2,16 @@ require 'net/http'
 
 namespace :worker_task do
 
+
+	task :re_crawl_this_week_movie_photo_and_trailer => :environment do
+	
+		Movie.where("is_this_week_new = true").each do |movie|
+			MovieWorkerNew.perform_async(movie.id)
+		end
+
+	end
+
+
 	task :test => :environment do
 		(1..10).each do |num|
 			HardWorker.perform_async("aa","cc")
@@ -71,7 +81,7 @@ namespace :worker_task do
 
 	task :run_movie_get_photos_trailers => :environment do
 		Movie.where("open_eye_link IS NOT NULL and open_eye_link != '' and is_open_eye_crawled = false ").each do |movie|
-			MovieWorker.perform_async(movie.id)
+			MovieWorkerNew.perform_async(movie.id)
 		end
 	end
 
