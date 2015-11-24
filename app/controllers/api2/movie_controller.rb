@@ -35,7 +35,7 @@ class Api2::MovieController < ApplicationController
     if params[:page] != nil
       movies = Movie.select('id, title, small_pic, large_pic, point, review_size').where("movie_round = 2").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 20)
     else
-      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 2")
+      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 2").order('publish_date_date DESC')
     end
     render :json => movies
   end
@@ -44,7 +44,7 @@ class Api2::MovieController < ApplicationController
     if params[:page] != nil
       movies = Movie.select('id, title, small_pic, large_pic, point, review_size').where("movie_round = 3 and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date ASC').paginate(:page => params[:page], :per_page => 20)
     else
-      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 3")
+      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 3").order('publish_date_date ASC')
     end
     render :json => movies
   end
