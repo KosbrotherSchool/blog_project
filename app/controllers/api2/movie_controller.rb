@@ -24,9 +24,27 @@ class Api2::MovieController < ApplicationController
   # iOS
   def pub_movies
     if params[:page] != nil
-      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').joins(:pub_movie_rank_table).paginate(:page => params[:page], :per_page => 10)
+      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').joins(:pub_movie_rank_table).paginate(:page => params[:page], :per_page => 20)
     else
       movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').joins(:pub_movie_rank_table)
+    end
+    render :json => movies
+  end
+
+  def second_movies
+    if params[:page] != nil
+      movies = Movie.select('id, title, small_pic, large_pic, point, review_size').where("movie_round = 2").order('publish_date_date DESC').paginate(:page => params[:page], :per_page => 20)
+    else
+      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 2")
+    end
+    render :json => movies
+  end
+
+  def up_going_movies
+    if params[:page] != nil
+      movies = Movie.select('id, title, small_pic, large_pic, point, review_size').where("movie_round = 3 and yahoo_link is not NULL and is_this_week_new = false").order('publish_date_date ASC').paginate(:page => params[:page], :per_page => 20)
+    else
+      movies = Movie.select('movies.id, title, small_pic, large_pic, point, review_size').where("movie_round = 3")
     end
     render :json => movies
   end
