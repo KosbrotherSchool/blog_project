@@ -2,6 +2,40 @@ require 'net/http'
 
 namespace :other_task do
 
+	task :update_pub_movie_rank_table => :environment do
+
+		ids = MovieRank.joins(:movie).order('current_rank ASC').pluck(:movie_id)
+		rank_num = 1
+		ids.each do |movie_id|
+			pmTable = PubMovieRankTable.new
+			pmTable.movie_id = movie_id
+			pmTable.current_rank = rank_num
+			rank_num = rank_num + 1
+			pmTable.save
+			puts pmTable.movie.title
+		end
+
+		movie_ids = Movie.where("movie_round = 1 and is_this_week_new = false").order('publish_date_date DESC').pluck(:id)
+		movie_ids.each do |movie_id|
+			if PubMovieRankTable.where(" movie_id = #{movie_id}").size == 0
+				pmTable = PubMovieRankTable.new
+				pmTable.movie_id = movie_id
+				pmTable.current_rank = rank_num
+				rank_num = 0
+				pmTable.save
+				puts pmTable.movie.title
+			end 
+		end
+
+	end
+
+	task :update_movie_time_data => :environment do
+		MovieTime.delete_all("is_show = true")
+		MovieTime.update_all("is_show = true")
+		MovieAreaShip.delete_all("is_show = true")
+		MovieAreaShip.update_all("is_show = true")
+	end
+
 	task :crawl_this_week_movie_review => :environment do
 
 		Movie.where("is_this_week_new = true").each do |movie|

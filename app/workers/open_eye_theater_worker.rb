@@ -70,7 +70,8 @@ class OpenEyeTheaterWorker
 				mMovietime.area_id = mMovietime.theater.area_id
 
 				mMovie = Movie.where("open_eye_id = '#{open_eye_id}'").first
-				mMovie.movie_round = 1
+				mMovie.movie_round = mTheater.movie_round
+
 				if mMovie.movie_length == "未提供"
 					mMovie.movie_length = movie_length
 				end

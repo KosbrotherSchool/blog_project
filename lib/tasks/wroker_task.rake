@@ -5,7 +5,7 @@ namespace :worker_task do
 
 	task :re_crawl_this_week_movie_photo_and_trailer => :environment do
 	
-		Movie.where("is_this_week_new = true").each do |movie|
+		Movie.where("is_this_week_new = true and open_eye_link is not NUll and open_eye_link != '' ").each do |movie|
 			MovieWorkerNew.perform_async(movie.id)
 		end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151017103740) do
+ActiveRecord::Schema.define(version: 20151124065921) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -164,6 +164,13 @@ ActiveRecord::Schema.define(version: 20151017103740) do
     t.datetime "updated_at"
   end
 
+  create_table "pub_movie_rank_tables", force: true do |t|
+    t.integer  "movie_id"
+    t.integer  "current_rank"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "replies", force: true do |t|
     t.integer  "message_id"
     t.string   "author"
@@ -184,6 +191,7 @@ ActiveRecord::Schema.define(version: 20151017103740) do
     t.integer  "second_area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "movie_round",           default: 1
   end
 
   create_table "trailers", force: true do |t|

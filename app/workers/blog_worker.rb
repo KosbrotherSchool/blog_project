@@ -17,23 +17,28 @@ class BlogWorker
     	article_heads = doc.css(".article-head")
     	article_heads.each do |head|
 
-	    	title = head.css(".title h2 a")[0].text
-	    	link = head.css(".title h2 a")[0].attr("href")
-	    	pub_date = head.css(".publish").text.to_date
+    		begin
+    			title = head.css(".title h2 a")[0].text
+		    	link = head.css(".title h2 a")[0].attr("href")
+		    	pub_date = head.css(".publish").text.to_date
 
-	    	puts title
-	    	puts link
-	    	puts pub_date
+		    	puts title
+		    	puts link
+		    	puts pub_date
 
-	    	if BlogPost.where('title LIKE ?', "#{title}").size == 0
-		    	post = BlogPost.new
-		    	post.title = title
-		    	post.link = link
-		    	post.pub_date = pub_date
-		    	post.movie_blog_id = blog.id
-		    	post.pic_link = blog.pic_link
-		    	post.save
-		    end
+		    	if BlogPost.where('title LIKE ?', "#{title}").size == 0
+			    	post = BlogPost.new
+			    	post.title = title
+			    	post.link = link
+			    	post.pub_date = pub_date
+			    	post.movie_blog_id = blog.id
+			    	post.pic_link = blog.pic_link
+			    	post.save
+			    end
+    		rescue Exception => e
+    			
+    		end
+	    	
     	end
     end
     

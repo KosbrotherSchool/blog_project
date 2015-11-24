@@ -18,8 +18,12 @@ class MovieWorkerNew
 
 		# photos
 		photos_link = ""
-		if doc.css("a.button")[0] != nil
-			photos_link = doc.css("a.button")[0].attr("href")
+		if doc.css("a.image.filmListPoster")[0] != nil
+			photos_link = doc.css("a.image.filmListPoster")[0].attr("href")
+			photos_link = photos_link.gsub("action=poster", "action=STILL")
+		elsif doc.css("#filmTagBlock span a")[0] != nil 
+			photos_link = doc.css("#filmTagBlock span a")[0].attr("href")
+			photos_link = photos_link.gsub("action=poster", "action=STILL")
 		end
 
 		# trailers

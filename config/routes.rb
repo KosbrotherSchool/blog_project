@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   namespace :api2 do
     get 'movie/movies'
     get 'movie/rank_movies'
+    get 'movie/pub_movies'
   end
 
   get 'message/messages'

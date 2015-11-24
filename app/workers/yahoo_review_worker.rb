@@ -28,11 +28,11 @@ class YahooReviewWorker
 	    total = doc.css(".statistic em").children[0].text.to_i
 
 	    puts total.to_s
-	    # if total > 30
-	    # 	total = 30
-	    # 	page_num = 3
-	    # else
-	    if (total % 10)==0 
+	    
+	    if total > 50
+	    	# total = 50
+	    	page_num = 5
+	    elsif (total % 10)==0 
 	    	page_num = total / 10
 	    else
 	    	page_num = ((total / 10)).to_i + 1
@@ -48,11 +48,11 @@ class YahooReviewWorker
 
 	    reviews = doc.css(".row-container")
 
-	    if movie.movie_review.last != nil
-	    	last_review_date = movie.movie_review.last.publish_date.to_date
-	    else
-	    	last_review_date = Date.yesterday
-	    end
+	    # if movie.movie_review.last != nil
+	    	# last_review_date = movie.movie_review.last.publish_date.to_date
+	    # else
+	    	# last_review_date = Date.yesterday
+	    # end
 	    
 	  	(1..page_num).each do |page|
 
@@ -72,7 +72,7 @@ class YahooReviewWorker
 			    res = http.request(request)
 			    doc = Nokogiri::HTML(res.body)
 
-			    total = doc.css(".statistic em").children[0].text.to_i
+			    # total = doc.css(".statistic em").children[0].text.to_i
 			    # page_num = (total / 10) + 1
 
 			    reviews = doc.css(".row-container")
@@ -102,7 +102,7 @@ class YahooReviewWorker
 				    # puts review_content
 				    # puts review_pub_date.to_s
 
-				    if review_pub_date > last_review_date
+				    if review_pub_date >= Date.yesterday && MovieReview.where("movie_id = #{movie.id} and title LIKE ?","#{review_title}").size == 0
 				    	
 				    	review = MovieReview.new
 					    review.movie_id = movie.id

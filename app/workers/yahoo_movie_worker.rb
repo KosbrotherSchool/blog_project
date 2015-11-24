@@ -81,6 +81,7 @@ class YahooMovieWorker
    	mMovie.large_pic = large_pic
    	mMovie.movie_class = movie_class
    	mMovie.is_yahoo_crawled = true
+    mMovie.review_size = 0
    	mMovie.save
 
   end

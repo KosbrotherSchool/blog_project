@@ -60,11 +60,15 @@ class Api::MovieController < ApplicationController
   end
 
   def theaters
-    if params[:area] != nil && params[:area] != ""
-      area_id = params[:area].to_i
-      theaters = Theater.select("id, name, address, phone, area_id").where(" area_id = #{area_id}")
+    if params[:movie_round] != nil
+      theaters = Theater.select("id, name, address, phone, area_id").where(" movie_round = #{params[:movie_round]}")
     else
-      theaters = Theater.select("id, name, address, phone, area_id").where(" theater_open_eye_link is NOT NULL or official_site_link is NOT NULL")
+      if params[:area] != nil && params[:area] != ""
+        area_id = params[:area].to_i
+        theaters = Theater.select("id, name, address, phone, area_id").where(" area_id = #{area_id}")
+      else
+        theaters = Theater.select("id, name, address, phone, area_id").where(" theater_open_eye_link is NOT NULL or official_site_link is NOT NULL")
+      end
     end
     render :json => theaters
   end
