@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124065921) do
+ActiveRecord::Schema.define(version: 20151129051533) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -36,6 +36,33 @@ ActiveRecord::Schema.define(version: 20151124065921) do
     t.datetime "updated_at"
     t.integer  "movie_blog_id"
     t.string   "pic_link"
+  end
+
+  create_table "ios_message_replies", force: true do |t|
+    t.integer  "ios_message_id"
+    t.string   "author"
+    t.text     "content"
+    t.string   "pub_date"
+    t.integer  "head_index"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ios_messages", force: true do |t|
+    t.integer  "board_id"
+    t.string   "author"
+    t.string   "title"
+    t.string   "tag"
+    t.text     "content"
+    t.string   "pub_date"
+    t.integer  "view_count"
+    t.integer  "like_count"
+    t.integer  "reply_size"
+    t.boolean  "is_head"
+    t.integer  "head_index"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "link_url",   default: ""
   end
 
   create_table "messages", force: true do |t|

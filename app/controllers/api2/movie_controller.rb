@@ -49,4 +49,14 @@ class Api2::MovieController < ApplicationController
     render :json => movies
   end
 
+  def message
+    messages = IosMessage.where(" board_id = #{params[:board_id]} ").order('is_head DESC').paginate(:page => params[:page], :per_page => 20)
+    render :json => messages
+  end
+
+  def reply
+    replies = IosMessageReply.where(" ios_message_id = #{params[:message_id]}").paginate(:page => params[:page], :per_page => 20)
+    render :json => replies
+  end
+
 end

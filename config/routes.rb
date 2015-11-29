@@ -39,6 +39,8 @@ Rails.application.routes.draw do
     get 'movie/pub_movies'
     get 'movie/second_movies'
     get 'movie/up_going_movies'
+    get 'movie/message'
+    get 'movie/reply'
   end
 
   get 'message/messages'
