@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151129051533) do
+ActiveRecord::Schema.define(version: 20151130095645) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20151129051533) do
     t.integer  "head_index"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "like_count",     default: 0
   end
 
   create_table "ios_messages", force: true do |t|

@@ -55,8 +55,80 @@ class Api2::MovieController < ApplicationController
   end
 
   def reply
+    message = IosMessage.find(params[:message_id])
+    message.view_count = message.view_count + 1
+    message.save
     replies = IosMessageReply.where(" ios_message_id = #{params[:message_id]}").paginate(:page => params[:page], :per_page => 20)
     render :json => replies
   end
+
+  def update_message_like
+    begin
+      message = IosMessage.find(params[:message_id])
+      message.like_count = message.like_count + 1
+      message.save
+      render :json => "ok"
+    rescue Exception => e
+      render :json => "error"
+    end
+  end
+
+  def update_reply_like
+    begin
+      reply = IosMessageReply.find(params[:reply_id])
+      reply.like_count = reply.like_count + 1
+      reply.save
+      render :json => "ok"
+    rescue Exception => e
+       render :json => "error"
+    end
+  end
+
+  skip_before_filter :verify_authenticity_token, :only => :update_messages
+
+  def update_messages
+    begin
+      message = IosMessage.new
+      message.board_id = params[:b]
+      message.author = params[:a]
+      message.title = params[:t]
+      message.tag = params[:tag]
+      message.content = params[:c]
+      message.pub_date = Time.current.to_date.to_s
+      message.head_index = params[:h].to_i
+      message.link_url = params[:l]
+      
+      message.view_count = 0
+      message.like_count = 0
+      message.reply_size = 0
+      message.is_head = false
+      message.save
+      render :json => "ok"
+    rescue Exception => e
+      render :json => "error"
+    end
+  end
+
+  skip_before_filter :verify_authenticity_token, :only => :update_replies
+
+  def update_replies
+    begin
+      reply = IosMessageReply.new
+      reply.ios_message_id = params[:m_id]
+      reply.author = params[:a]
+      reply.content = params[:c]
+      reply.pub_date = Time.current.to_date.to_s
+      reply.head_index = params[:h].to_i
+      reply.save
+
+      message = IosMessage.find(params[:m_id])
+      message.reply_size = message.reply_size + 1
+      message.save
+      render :json => "ok"
+    rescue Exception => e
+      render :json => "error"
+    end
+  end
+
 
 end
