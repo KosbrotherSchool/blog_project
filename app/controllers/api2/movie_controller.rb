@@ -54,6 +54,11 @@ class Api2::MovieController < ApplicationController
     render :json => messages
   end
 
+  def highlight_messages
+    messages = IosMessage.where(" is_highlight = true")
+    render :json => messages
+  end
+
   def reply
     message = IosMessage.find(params[:message_id])
     message.view_count = message.view_count + 1

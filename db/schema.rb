@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130095645) do
+ActiveRecord::Schema.define(version: 20151201132830) do
 
   create_table "app_versions", force: true do |t|
     t.string   "version_name"
@@ -63,7 +63,9 @@ ActiveRecord::Schema.define(version: 20151130095645) do
     t.integer  "head_index"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "link_url",   default: ""
+    t.string   "link_url",     default: ""
+    t.boolean  "is_highlight", default: false
+    t.string   "pic_link"
   end
 
   create_table "messages", force: true do |t|

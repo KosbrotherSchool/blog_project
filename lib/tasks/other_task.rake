@@ -3,7 +3,7 @@ require 'net/http'
 namespace :other_task do
 
 	task :update_pub_movie_rank_table => :environment do
-
+		PubMovieRankTable.delete_all
 		ids = MovieRank.joins(:movie).order('current_rank ASC').pluck(:movie_id)
 		rank_num = 1
 		ids.each do |movie_id|
@@ -26,7 +26,6 @@ namespace :other_task do
 				puts pmTable.movie.title
 			end 
 		end
-
 	end
 
 	task :update_movie_time_data => :environment do
