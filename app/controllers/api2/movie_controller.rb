@@ -100,6 +100,18 @@ class Api2::MovieController < ApplicationController
     render :json => posts
   end
 
+  def search
+    query = params[:query]
+    movies = Movie.select('id, title, title_eng, publish_date, movie_class, actors, movie_type, small_pic').where('title LIKE ? OR title_eng LIKE ? OR actors LIKE ?', "%#{query}%", "%#{query}%", "%#{query}%").paginate(:page => params[:page], :per_page => 20)
+    render :json => movies 
+  end
+
+  def reviews 
+    movie_id = params[:movie_id]
+    reviews = MovieReview.select("id, movie_id, author, title, content, publish_date, point, head_index").where("movie_id = #{movie_id}").order('updated_at DESC').paginate(:page => params[:page], :per_page => 20)
+    render :json => reviews
+  end
+
   skip_before_filter :verify_authenticity_token, :only => :update_messages
 
   def update_messages

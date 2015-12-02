@@ -42,8 +42,11 @@ Rails.application.routes.draw do
     get 'movie/message'
     get 'movie/reply'
     get 'movie/highlight_messages'
+
     get 'movie/news'
     get 'movie/blog_posts'
+    get 'movie/search'
+    get 'movie/reviews'
     
     get 'movie/update_message_like'
     post 'movie/update_messages'
