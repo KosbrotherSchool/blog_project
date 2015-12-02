@@ -89,6 +89,17 @@ class Api2::MovieController < ApplicationController
     end
   end
 
+  def news
+    news_type = params[:news_type].to_i
+    news = MovieNews.select("id, title, news_link, publish_day, pic_link").where("news_type = #{news_type}").order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    render :json => news
+  end
+
+  def blog_posts
+    posts = BlogPost.select("title, link, pub_date, pic_link").order('pub_date DESC').paginate(:page => params[:page], :per_page => 20)
+    render :json => posts
+  end
+
   skip_before_filter :verify_authenticity_token, :only => :update_messages
 
   def update_messages
