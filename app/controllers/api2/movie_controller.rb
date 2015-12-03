@@ -50,8 +50,15 @@ class Api2::MovieController < ApplicationController
   end
 
   def message
-    messages = IosMessage.where(" board_id = #{params[:board_id]} ").order('is_head DESC').paginate(:page => params[:page], :per_page => 20)
-    render :json => messages
+    if params[:page].to_i == 1
+      h_messsages = IosMessage.where(" board_id = #{params[:board_id]} and is_head = true")
+      messages = IosMessage.where(" board_id = #{params[:board_id]} and is_head = false ").order('pub_date DESC').paginate(:page => params[:page], :per_page => 20)
+      h_messsages << messages
+      render :json =>  h_messsages
+    else
+      messages = IosMessage.where(" board_id = #{params[:board_id]} and is_head = false ").order('pub_date DESC').paginate(:page => params[:page], :per_page => 20)
+      render :json => messages 
+    end
   end
 
   def highlight_messages
