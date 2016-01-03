@@ -598,6 +598,10 @@ namespace :crawl_yahoo do
     Capybara.app_host = 'https://tw.movies.yahoo.com'
 
     puts "Crawl Taipei Rank"
+
+    MovieRank.delete_all("is_show = true")
+    MovieRank.update_all("is_show = true")
+
     page.visit '/chart.html?cate=taipei'
     page_no = Nokogiri::HTML(page.html)
     page_no.css("tbody tr").first.remove
@@ -671,9 +675,6 @@ namespace :crawl_yahoo do
       end 
 
     end 
-
-    MovieRank.delete_all("is_show = true")
-    MovieRank.update_all("is_show = true")
 
   end
 

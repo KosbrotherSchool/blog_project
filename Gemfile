@@ -66,3 +66,5 @@ gem 'rspec-rails'
 gem 'capybara'
 gem 'selenium-webdriver'
 
+gem 'whenever', :require => false
+

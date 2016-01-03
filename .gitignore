@@ -17,3 +17,4 @@
 
 /config/deploy/*
 /config/database.yml
+/config/schedule.rb
