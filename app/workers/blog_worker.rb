@@ -88,6 +88,6 @@ class BlogWorker
 
 	    end
     end
-
+    sleep 2
   end
 end

@@ -418,6 +418,7 @@ namespace :crawl_yahoo do
           mMovie.yahoo_link = link
           mMovie.movie_round = 1
           mMovie.is_this_week_new = true
+          mMovie.yahoo_id = yahoo_id
           mMovie.save
           YahooMovieWorker.perform_async(mMovie.id)
         end
@@ -591,16 +592,13 @@ namespace :crawl_yahoo do
   end
 
   task :crawl_movie_ranks => :environment do
-    # MovieRank.delete_all
+    MovieRank.delete_all
 
     include Capybara::DSL
     Capybara.current_driver = :selenium_chrome
     Capybara.app_host = 'https://tw.movies.yahoo.com'
 
     puts "Crawl Taipei Rank"
-
-    MovieRank.delete_all("is_show = true")
-    MovieRank.update_all("is_show = true")
 
     page.visit '/chart.html?cate=taipei'
     page_no = Nokogiri::HTML(page.html)
@@ -644,11 +642,6 @@ namespace :crawl_yahoo do
       movie_link = parselink(movie_link)
       yahoo_id = parseYahooId(movie_link)
 
-      # puts rank + " " + last_week_rank + " "+ title + " "
-      # puts movie_link
-      # puts publish_weeks
-      # puts movie_trailer_link
-      # puts viwer_rating.to_s
       if yahoo_id != nil
         if Movie.where("yahoo_id = #{yahoo_id}").size != 0
           mMovie = Movie.where("yahoo_id = #{yahoo_id}").first
@@ -675,6 +668,8 @@ namespace :crawl_yahoo do
       end 
 
     end 
+
+    MovieRank.update_all("is_show = true")
 
   end
 

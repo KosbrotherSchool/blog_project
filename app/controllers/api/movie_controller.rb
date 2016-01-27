@@ -226,6 +226,8 @@ class Api::MovieController < ApplicationController
         open_eye_id = link[link.index("film_id=")+8..link.length]
       elsif link.index("filmid=")
         open_eye_id = link[link.index("filmid=")+7..link.length]
+      elsif link.index("?CFID")
+        open_eye_id = link[link.index("/movie/")+7..link.index("?CFID")-2]
       else
         open_eye_id = link[link.index("/movie/")+7..link.length-2]
       end

@@ -70,7 +70,7 @@ class YahooMovieWorkerByYahooID
 		    mMovie.movie_info = movie_info
 		    mMovie.publish_date = publish_date
 		    mMovie.director = director
-		    mMovie.actors = actors
+		    mMovie.actors = actors[0..30]
 		    mMovie.official = official
 		    mMovie.movie_type = type
 		    mMovie.movie_length = length

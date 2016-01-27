@@ -2,6 +2,14 @@ require 'net/http'
 
 namespace :other_task do
 
+  task :update_blog_pic => :environment do
+  	BlogPost.all.each do |post|
+  		puts post.title
+  		post.pic_link = post.movie_blog.pic_link
+  		post.save
+  	end
+  end
+
 	task :update_pub_movie_rank_table => :environment do
 		PubMovieRankTable.delete_all
 		ids = MovieRank.joins(:movie).order('current_rank ASC').pluck(:movie_id)
